@@ -1,0 +1,75 @@
+<resources>
+    <string name="app_name">DiXcio</string>
+    <string name="quit_app">Quit App</string>
+    <string name="quit">Quit</string>
+    <string name="menu">Menu</string>
+    <string name="new_project">New project</string>
+    <string name="set_project_name">Project Name</string>
+    <string name="set_language_1">Language 1</string>
+    <string name="set_language_2">Language 2</string>
+    <string name="deleteProjects">Delete Projects</string>
+    <string name="addWords">Add Words</string>
+    <string name="browse">Browse</string>
+    <string name="train">Train</string>
+    <string name="importCSV">Import CSV</string>
+    <string name="exportCSV">Export CSV</string>
+    <string name="save">Save</string>
+    <string name="back">Back</string>
+    <string name="word1">Word 1</string>
+    <string name="word2">Word 2</string>
+    <string name="wordBrowser">Word Browser</string>
+    <string name="wordDefinition">Word Definition</string>
+    <string name="guess">Guess?</string>
+    <string-array name="germanArticle">
+        <item>None</item>
+        <item>Der</item>
+        <item>Das</item>
+        <item>Die</item>
+    </string-array>
+
+    <string-array name="bullshit">
+        <item>One moment please, we are selling your datas to Google</item>
+        <item>Establishing connection with the Pentagon</item>
+        <item>Uninstalling all applications</item>
+        <item>Downloading 13Gb of words, one moment please</item>
+        <item>Scanning your passwords</item>
+        <item>Getting your bank credentials, please hold</item>
+        <item>Breaking the firewall, it may take a while</item>
+
+    </string-array>
+
+    <string-array name="frenchArticle">
+        <item>None</item>
+        <item>Le</item>
+        <item>La</item>
+    </string-array>
+
+    <string-array name="alphabet">
+        <item>A</item>
+        <item>B</item>
+        <item>C</item>
+        <item>D</item>
+        <item>E</item>
+        <item>F</item>
+        <item>G</item>
+        <item>H</item>
+        <item>I</item>
+        <item>J</item>
+        <item>K</item>
+        <item>L</item>
+        <item>M</item>
+        <item>N</item>
+        <item>O</item>
+        <item>P</item>
+        <item>Q</item>
+        <item>R</item>
+        <item>S</item>
+        <item>T</item>
+        <item>U</item>
+        <item>V</item>
+        <item>W</item>
+        <item>X</item>
+        <item>Y</item>
+        <item>Z</item>
+    </string-array>
+</resources>
