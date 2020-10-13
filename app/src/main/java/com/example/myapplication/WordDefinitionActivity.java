@@ -149,7 +149,6 @@ public class WordDefinitionActivity extends AppCompatActivity implements Adapter
 
                     DataBase db = new DataBase(WordDefinitionActivity.this, MainActivity.currentProjectName);
                     boolean success =  db.addOne(word);
-                    Toast.makeText(WordDefinitionActivity.this, "Success = " + success, Toast.LENGTH_LONG).show();
                 }
             }
         });
@@ -202,7 +201,6 @@ public class WordDefinitionActivity extends AppCompatActivity implements Adapter
                 word2StoredAt = parent.getItemAtPosition(position).toString();
                 break;
         }
-        Toast.makeText(parent.getContext(), parent.getItemAtPosition(position).toString(), Toast.LENGTH_LONG).show();
     }
 
     @Override

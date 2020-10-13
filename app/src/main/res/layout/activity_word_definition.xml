@@ -40,7 +40,8 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:ems="10"
-            android:inputType="textPersonName" />
+            android:inputType="textPersonName"
+            android:background="@android:color/holo_blue_light"/>
 
         <Spinner
             android:id="@+id/word1StoredAtSpinner"
@@ -73,7 +74,8 @@
             android:layout_weight="1"
             android:autoText="false"
             android:ems="10"
-            android:inputType="textPersonName" />
+            android:inputType="textPersonName"
+            android:background="@android:color/holo_orange_light"/>
 
         <Spinner
             android:id="@+id/word2StoredAtSpinner"
@@ -96,14 +98,16 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="@string/back" />
+            android:text="@string/back"
+            android:background="@android:color/holo_red_light"/>
 
         <Button
             android:id="@+id/saveWordButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="@string/save" />
+            android:text="@string/save"
+            android:background="@android:color/holo_green_light"/>
     </LinearLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

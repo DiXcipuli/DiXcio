@@ -10,7 +10,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 public class ProjectMenuActivity extends AppCompatActivity {
 
-    Button addWordsButton, browseWordsButton;
+    Button addWordsButton, browseWordsButton, trainButton;
     TextView subTitleProjectName;
 
     @Override
@@ -20,6 +20,7 @@ public class ProjectMenuActivity extends AppCompatActivity {
 
         addWordsButton = (Button)findViewById(R.id.addWordsButton);
         browseWordsButton = (Button)findViewById(R.id.browseButton);
+        trainButton = (Button)findViewById(R.id.trainButton);
         subTitleProjectName = (TextView)findViewById(R.id.subTitleProjectName);
         subTitleProjectName.setText(MainActivity.currentProjectName);
 
@@ -33,6 +34,13 @@ public class ProjectMenuActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 loadWords();
+            }
+        });
+        trainButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(getApplicationContext(), TrainActivity.class);
+                startActivity(intent);
             }
         });
     }
