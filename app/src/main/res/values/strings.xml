@@ -20,6 +20,8 @@
     <string name="wordBrowser">Word Browser</string>
     <string name="wordDefinition">Word Definition</string>
     <string name="guess">Guess?</string>
+
+    <string name="csvText">To be tracked, your csv file must be named words.csv and be put in the public Download folder of your phone</string>
     <string-array name="germanArticle">
         <item>None</item>
         <item>Der</item>

@@ -1,16 +1,24 @@
 package com.example.myapplication;
 
 public class WordItem {
-    private String word1StoredAt;
-    private String word2StoredAt;
+
+
     private String articleWord1;
-    private String articleWord2;
     private String wordLanguage1;
+    private String word1StoredAt;
+
+    private String articleWord2;
     private String wordLanguage2;
+    private String word2StoredAt;
+
+    private Integer count;
+    private Integer success;
+    private Float percentage;
 
     private String category;
+    private String date;
 
-    public WordItem(String articleWord1, String wordLanguage1, String word1StoredAt, String articleWord2, String wordLanguage2, String word2StoredAt, String category) {
+    public WordItem(String articleWord1, String wordLanguage1, String word1StoredAt, String articleWord2, String wordLanguage2, String word2StoredAt, Integer count, Integer success, Float percentage, String category, String date) {
         this.articleWord1 = articleWord1;
         this.wordLanguage1 = wordLanguage1;
         this.word1StoredAt = word1StoredAt;
@@ -19,7 +27,12 @@ public class WordItem {
         this.wordLanguage2 = wordLanguage2;
         this.word2StoredAt = word2StoredAt;
 
+        this.count = count;
+        this.success = success;
+        this.percentage = percentage;
+
         this.category = category;
+        this.date = date;
     }
 
     @Override
@@ -33,7 +46,7 @@ public class WordItem {
             articleWord2Replacement = "";
         }
 
-        return articleWord1Replacement + " " + wordLanguage1 + " | " + articleWord2Replacement + " " + wordLanguage2;
+        return articleWord1Replacement + " " + wordLanguage1 + " | " + articleWord2Replacement + " " + wordLanguage2 + date;
     }
 
     public String toTheString(){

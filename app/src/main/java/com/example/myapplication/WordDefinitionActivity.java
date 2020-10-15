@@ -23,7 +23,7 @@ public class WordDefinitionActivity extends AppCompatActivity implements Adapter
     Button saveWordButton;
     private String articleWord1, articleWord2, word1StoredAt, word2StoredAt;
     EditText word1, word2;
-    Map<String, Integer> map;
+    public static Map<String, Integer> map;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -142,7 +142,11 @@ public class WordDefinitionActivity extends AppCompatActivity implements Adapter
                             articleWord2Spinner.getSelectedItem().toString(),
                             word2.getText().toString(),
                             word2StoredAtSpinner.getSelectedItem().toString(),
-                            "None");
+                            0,
+                            0,
+                            (float)0,
+                            "None",
+                            "");
 
                     word1.setText("");
                     word2.setText("");

@@ -137,8 +137,9 @@ public class MainActivity extends AppCompatActivity implements DeleteDialog.Dele
 
     @Override
     public void onYesClicked() {
-        for(Integer i = 1; i < layout.getChildCount(); i++){
-            layout.removeViewAt(i);
+        Integer count = layout.getChildCount();
+        for(Integer i = 1; i < count; i++){
+            layout.removeViewAt(1);
         }
 
         projectList.clear();

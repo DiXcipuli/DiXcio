@@ -41,8 +41,9 @@ public class NewProjectActivity extends AppCompatActivity {
 
                 else {
                     saveProject(v);
-                    openNewWordActivity();
                     createDatabase();
+                    openNewWordActivity();
+
                 }
             }
         });
