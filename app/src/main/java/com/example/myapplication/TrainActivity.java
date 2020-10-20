@@ -84,6 +84,7 @@ public class TrainActivity extends AppCompatActivity implements AdapterView.OnIt
             @Override
             public void onClick(View v) {
                 index ++;
+                currentCardLanguage1 = boolGuessLanguage1;
                 displayNewWord();
             }
         });

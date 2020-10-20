@@ -46,13 +46,12 @@ public class WordItem {
             articleWord2Replacement = "";
         }
 
-        return articleWord1Replacement + " " + wordLanguage1 + " | " + articleWord2Replacement + " " + wordLanguage2 + date;
+        return articleWord1Replacement + " " + wordLanguage1 + " | " + articleWord2Replacement + " " + wordLanguage2;
     }
 
     public String toTheString(){
         return wordLanguage1;
     }
-
 
     public String getWord1StoredAt() {
         return word1StoredAt;
