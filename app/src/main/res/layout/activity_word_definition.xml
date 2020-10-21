@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@android:color/holo_blue_light"
     tools:context=".WordDefinitionActivity">
 
     <TextView
@@ -40,8 +41,7 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:ems="10"
-            android:inputType="textPersonName"
-            android:background="@android:color/holo_blue_light"/>
+            android:inputType="textPersonName"></EditText>
 
         <Spinner
             android:id="@+id/word1StoredAtSpinner"
@@ -74,8 +74,7 @@
             android:layout_weight="1"
             android:autoText="false"
             android:ems="10"
-            android:inputType="textPersonName"
-            android:background="@android:color/holo_orange_light"/>
+            android:inputType="textPersonName"></EditText>
 
         <Spinner
             android:id="@+id/word2StoredAtSpinner"
@@ -92,14 +91,6 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent">
-
-        <Button
-            android:id="@+id/backWordButton"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="@string/back"
-            android:background="@android:color/holo_red_light"/>
 
         <Button
             android:id="@+id/saveWordButton"

@@ -4,7 +4,10 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@android:color/holo_blue_light"
+
     tools:context=".MainActivity">
+
 
     <TextView
         android:id="@+id/textView2"
@@ -21,7 +24,15 @@
         android:id="@+id/scrollView2"
         android:layout_width="350dp"
         android:layout_height="0dp"
+        android:layout_marginStart="24dp"
+        android:layout_marginLeft="24dp"
+        android:layout_marginEnd="24dp"
+        android:layout_marginRight="24dp"
+        android:layout_marginBottom="8dp"
         android:background="@drawable/stroke"
+        android:paddingLeft="15dp"
+        android:paddingTop="5dp"
+        android:paddingRight="15dp"
         app:layout_constraintBottom_toTopOf="@+id/deleteProjectsButton"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -39,6 +50,7 @@
                 android:id="@+id/new_project"
                 android:layout_width="fill_parent"
                 android:layout_height="fill_parent"
+                android:background="@android:color/holo_orange_light"
                 android:text="@string/new_project" />
 
         </LinearLayout>
@@ -46,8 +58,14 @@
 
     <Button
         android:id="@+id/quit_app"
-        android:layout_width="300dp"
+        android:layout_width="fill_parent"
         android:layout_height="40dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginLeft="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginRight="8dp"
+        android:layout_marginBottom="8dp"
+        android:background="@android:color/holo_orange_light"
         android:text="@string/quit_app"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -55,8 +73,14 @@
 
     <Button
         android:id="@+id/deleteProjectsButton"
-        android:layout_width="300dp"
+        android:layout_width="fill_parent"
         android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginLeft="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginRight="8dp"
+        android:layout_marginBottom="8dp"
+        android:background="@android:color/holo_orange_light"
         android:text="@string/deleteProjects"
         app:layout_constraintBottom_toTopOf="@+id/quit_app"
         app:layout_constraintEnd_toEndOf="parent"

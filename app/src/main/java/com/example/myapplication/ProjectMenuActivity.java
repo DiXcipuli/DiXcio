@@ -10,7 +10,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 public class ProjectMenuActivity extends AppCompatActivity {
 
-    Button addWordsButton, browseWordsButton, trainButton, importCsvButton;
+    Button addWordsButton, browseWordsButton, trainButton, importCsvButton, exportCsvButton;
     TextView subTitleProjectName;
 
     @Override
@@ -24,6 +24,8 @@ public class ProjectMenuActivity extends AppCompatActivity {
         subTitleProjectName = (TextView)findViewById(R.id.subTitleProjectName);
         subTitleProjectName.setText(MainActivity.currentProjectName);
         importCsvButton = (Button)findViewById(R.id.importCSVButtonMenu);
+        exportCsvButton = (Button)findViewById(R.id.exportCSVButton);
+
         importCsvButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -51,6 +53,15 @@ public class ProjectMenuActivity extends AppCompatActivity {
                 startActivity(intent);
             }
         });
+
+        exportCsvButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(getApplicationContext(), ExportCsvActivity.class);
+                startActivity(intent);
+            }
+        });
+
     }
 
     public void openNewWordActivity(){

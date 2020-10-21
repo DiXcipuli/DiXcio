@@ -11,7 +11,8 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".ImportCsvActivity"></activity>
+        <activity android:name=".ExportCsvActivity"></activity>
+        <activity android:name=".ImportCsvActivity" />
         <activity
             android:name=".TrainActivity"
             android:configChanges="orientation"

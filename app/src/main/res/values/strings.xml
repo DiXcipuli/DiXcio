@@ -22,6 +22,8 @@
     <string name="guess">Guess?</string>
 
     <string name="csvText">To be tracked, your csv file must be named words.csv and be put in the public Download folder of your phone</string>
+    <string name="cvsExportText">Export csv with this format</string>
+
     <string-array name="germanArticle">
         <item>None</item>
         <item>Der</item>

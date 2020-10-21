@@ -3,6 +3,7 @@ package com.example.myapplication;
 import android.Manifest;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
@@ -109,6 +110,12 @@ public class MainActivity extends AppCompatActivity implements DeleteDialog.Dele
                 Button newCreatedProject = new Button(this);
                 newCreatedProject.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.FILL_PARENT, LinearLayout.LayoutParams.FILL_PARENT));
                 newCreatedProject.setText(splittedMessage[0]);
+                newCreatedProject.setBackgroundColor(Color.parseColor("#FFBB34"));
+
+                LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
+                        LinearLayout.LayoutParams.FILL_PARENT, LinearLayout.LayoutParams.FILL_PARENT);
+                params.setMargins(0, 4, 0, 0);
+                newCreatedProject.setLayoutParams(params);
                 //newCreatedProject.setId(R.id.project1Button);
 
                 newCreatedProject.setOnClickListener(new OnClickListener() {
@@ -144,6 +151,7 @@ public class MainActivity extends AppCompatActivity implements DeleteDialog.Dele
         Integer count = layout.getChildCount();
         for(Integer i = 1; i < count; i++){
             layout.removeViewAt(1);
+            this.deleteDatabase(projectList.elementAt(i-1).getProjectName());
         }
 
         projectList.clear();
@@ -208,5 +216,11 @@ public class MainActivity extends AppCompatActivity implements DeleteDialog.Dele
         map.put("X", 23);
         map.put("Y", 24);
         map.put("Z", 25);
+        map.put("à", 0);
+        map.put("â", 0);
+        map.put("é", 4);
+        map.put("è", 4);
+        map.put("ê", 25);
+        map.put("ç", 2);
     }
 }

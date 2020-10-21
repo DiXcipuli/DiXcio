@@ -8,6 +8,7 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.Spinner;
+import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -21,6 +22,9 @@ public class TrainActivity extends AppCompatActivity implements AdapterView.OnIt
     List<WordItem> wordList;
     boolean boolGuessLanguage1;
     boolean currentCardLanguage1;
+    TextView wordProgression;
+    DataBase dataBase;
+    Integer currentBrowseMode;
 
     Integer index;
 
@@ -37,6 +41,7 @@ public class TrainActivity extends AppCompatActivity implements AdapterView.OnIt
         alphabetSpinner = (Spinner)findViewById(R.id.alphabetSpinner);
         successButton = (ImageButton)findViewById(R.id.successButton);
         failButton = (ImageButton)findViewById(R.id.failButton);
+        wordProgression = (TextView)findViewById(R.id.wordProgression);
 
         ArrayAdapter<CharSequence> orderAdapter = ArrayAdapter.createFromResource(this, R.array.browsingOrder, R.layout.spinner_row);
         orderAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
@@ -58,6 +63,7 @@ public class TrainActivity extends AppCompatActivity implements AdapterView.OnIt
         guessLanguage1.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                wordList = dataBase.getAllWords(currentBrowseMode);
                 boolGuessLanguage1 = true;
                 currentCardLanguage1 = true;
                 mainTrainPannel.setBackgroundColor(Color.parseColor("#33B5E6"));
@@ -69,6 +75,7 @@ public class TrainActivity extends AppCompatActivity implements AdapterView.OnIt
         guessLanguage2.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                wordList = dataBase.getAllWords(currentBrowseMode);
                 boolGuessLanguage1 = false;
                 currentCardLanguage1 = false;
                 mainTrainPannel.setBackgroundColor(Color.parseColor("#FFBB34"));
@@ -77,8 +84,9 @@ public class TrainActivity extends AppCompatActivity implements AdapterView.OnIt
             }
         });
 
-        DataBase dataBase = new DataBase(getApplicationContext(), MainActivity.currentProjectName);
-        wordList = dataBase.getAllWords(4);
+        currentBrowseMode = 4;
+        dataBase = new DataBase(getApplicationContext(), MainActivity.currentProjectName);
+        wordList = dataBase.getAllWords(currentBrowseMode);
 
         successButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -120,7 +128,21 @@ public class TrainActivity extends AppCompatActivity implements AdapterView.OnIt
 
     @Override
     public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+        switch(parent.getId()){
+            case R.id.orderSpinner:
+                updateBrowseMode(position);
+                break;
 
+            case R.id.alphabetSpinner:
+                break;
+        }
+
+    }
+
+    public void updateBrowseMode(Integer mode){
+        if(mode == 0 || mode ==2){
+            alphabetSpinner.setEnabled(false);
+        }
     }
 
     @Override
@@ -129,11 +151,13 @@ public class TrainActivity extends AppCompatActivity implements AdapterView.OnIt
     }
 
     public void displayNewWord(){
+        wordProgression.setText(Integer.toString(index + 1) + " / " + Integer.toString(wordList.size()) + " words");
         if(index >= wordList.size()){
             mainTrainPannel.setText("No more datas!");
             index = -1;
         }
         else{
+
             String article1 = wordList.get(index).getArticleWord1();
             String article2 = wordList.get(index).getArticleWord2();
             if(article1.equals("None")){
