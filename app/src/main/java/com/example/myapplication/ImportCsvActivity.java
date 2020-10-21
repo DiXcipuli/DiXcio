@@ -147,6 +147,14 @@ public class ImportCsvActivity extends AppCompatActivity {
                             if(str[i].contains("'")){
                                 str[i] = str[i].replace("'","''");
                             }
+
+                            while(str[i].length() != 0){
+                                if(Character.toString(str[i].charAt(0)).equals(" "))
+                                    str[i] = str[i].substring(1);
+                                else{
+                                    break;
+                                }
+                            }
                         }
 
                         sb.append("'" + str[0] + "', '");

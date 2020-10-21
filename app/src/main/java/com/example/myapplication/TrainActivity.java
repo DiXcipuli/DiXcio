@@ -11,6 +11,7 @@ import android.widget.Spinner;
 import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.constraintlayout.widget.ConstraintLayout;
 
 import java.util.List;
 
@@ -25,6 +26,7 @@ public class TrainActivity extends AppCompatActivity implements AdapterView.OnIt
     TextView wordProgression;
     DataBase dataBase;
     Integer currentBrowseMode;
+    ConstraintLayout background;
 
     Integer index;
 
@@ -42,6 +44,7 @@ public class TrainActivity extends AppCompatActivity implements AdapterView.OnIt
         successButton = (ImageButton)findViewById(R.id.successButton);
         failButton = (ImageButton)findViewById(R.id.failButton);
         wordProgression = (TextView)findViewById(R.id.wordProgression);
+        background = (ConstraintLayout)findViewById(R.id.background);
 
         ArrayAdapter<CharSequence> orderAdapter = ArrayAdapter.createFromResource(this, R.array.browsingOrder, R.layout.spinner_row);
         orderAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
@@ -66,9 +69,12 @@ public class TrainActivity extends AppCompatActivity implements AdapterView.OnIt
                 wordList = dataBase.getAllWords(currentBrowseMode);
                 boolGuessLanguage1 = true;
                 currentCardLanguage1 = true;
-                mainTrainPannel.setBackgroundColor(Color.parseColor("#33B5E6"));
+                background.setBackgroundColor(Color.parseColor("#33B5E6"));
+                mainTrainPannel.setBackgroundResource(R.drawable.blueblack);
                 index = 0;
                 displayNewWord();
+                successButton.setBackgroundResource(R.drawable.yellowblack);
+                failButton.setBackgroundResource(R.drawable.yellowblack);
             }
         });
 
@@ -78,7 +84,10 @@ public class TrainActivity extends AppCompatActivity implements AdapterView.OnIt
                 wordList = dataBase.getAllWords(currentBrowseMode);
                 boolGuessLanguage1 = false;
                 currentCardLanguage1 = false;
-                mainTrainPannel.setBackgroundColor(Color.parseColor("#FFBB34"));
+                background.setBackgroundColor(Color.parseColor("#FFBB34"));
+                mainTrainPannel.setBackgroundResource(R.drawable.yellowblack);
+                successButton.setBackgroundResource(R.drawable.blueblack);
+                failButton.setBackgroundResource(R.drawable.blueblack);
                 index = 0;
                 displayNewWord();
             }
@@ -110,12 +119,12 @@ public class TrainActivity extends AppCompatActivity implements AdapterView.OnIt
                         article2 = "";
                     }
                     if(currentCardLanguage1){
-                        mainTrainPannel.setBackgroundColor(Color.parseColor("#FFBB34"));
+                        mainTrainPannel.setBackgroundResource(R.drawable.yellowblack);
                         mainTrainPannel.setText(article2 + " " + wordList.get(index).getWordLanguage2());
                         currentCardLanguage1 = false;
                     }
                     else{
-                        mainTrainPannel.setBackgroundColor(Color.parseColor("#33B5E6"));
+                        mainTrainPannel.setBackgroundResource(R.drawable.blueblack);
                         mainTrainPannel.setText(article1 + " " + wordList.get(index).getWordLanguage1());
                         currentCardLanguage1 = true;
                     }
@@ -170,12 +179,12 @@ public class TrainActivity extends AppCompatActivity implements AdapterView.OnIt
             String word;
             if(boolGuessLanguage1) {
                 word = article1 + " " + wordList.get(index).getWordLanguage1();
-                mainTrainPannel.setBackgroundColor(Color.parseColor("#33B5E6"));
+                mainTrainPannel.setBackgroundResource(R.drawable.blueblack);
 
             }
             else{
                 word = article2 + " " + wordList.get(index).getWordLanguage2();
-                mainTrainPannel.setBackgroundColor(Color.parseColor("#FFBB34"));
+                mainTrainPannel.setBackgroundResource(R.drawable.yellowblack);
             }
             mainTrainPannel.setText(word);
         }

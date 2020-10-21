@@ -22,7 +22,7 @@
     <string name="guess">Guess?</string>
 
     <string name="csvText">To be tracked, your csv file must be named words.csv and be put in the public Download folder of your phone</string>
-    <string name="cvsExportText">Export csv with this format</string>
+    <string name="cvsExportText">A csv file will be created containing all the words stored for this project. This file is located at Storage/Documents/DiXcio/${your_project_name}.csv</string>
 
     <string-array name="germanArticle">
         <item>None</item>

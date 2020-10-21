@@ -1,5 +1,6 @@
 package com.example.myapplication;
 
+import android.graphics.Color;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.ArrayAdapter;
@@ -8,6 +9,7 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.constraintlayout.widget.ConstraintLayout;
 
 import java.util.List;
 
@@ -16,6 +18,7 @@ public class WordBrowserActivity extends AppCompatActivity {
     ListView wordListView;
     Button word1Button, word2Button;
     TextView wordNumber;
+    ConstraintLayout background;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -26,6 +29,7 @@ public class WordBrowserActivity extends AppCompatActivity {
         word1Button = (Button)findViewById(R.id.language1Button);
         word2Button = (Button)findViewById(R.id.language2Button);
         wordNumber = (TextView)findViewById(R.id.wordNumber);
+        background = (ConstraintLayout)findViewById(R.id.background);
 
         word1Button.setText(MainActivity.currentLanguage1);
         word2Button.setText(MainActivity.currentLanguage2);
@@ -37,6 +41,8 @@ public class WordBrowserActivity extends AppCompatActivity {
                 List<WordItem> allWordsList = dataBase.getAllWords(2);
                 ArrayAdapter wordArrayAdapter = new ArrayAdapter<WordItem>(WordBrowserActivity.this, android.R.layout.simple_list_item_1, allWordsList);
                 wordListView.setAdapter(wordArrayAdapter);
+                background.setBackgroundColor(Color.parseColor("#33B5E6"));
+                wordListView.setBackgroundColor(Color.parseColor("#33B5E6"));
             }
         });
 
@@ -47,6 +53,8 @@ public class WordBrowserActivity extends AppCompatActivity {
                 List<WordItem> allWordsList = dataBase.getAllWords(3);
                 ArrayAdapter wordArrayAdapter = new ArrayAdapter<WordItem>(WordBrowserActivity.this, android.R.layout.simple_list_item_1, allWordsList);
                 wordListView.setAdapter(wordArrayAdapter);
+                background.setBackgroundColor(Color.parseColor("#FFBB34"));
+                wordListView.setBackgroundColor(Color.parseColor("#FFBB34"));
             }
         });
 

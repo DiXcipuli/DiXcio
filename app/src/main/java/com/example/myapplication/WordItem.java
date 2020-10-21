@@ -49,6 +49,10 @@ public class WordItem {
         return articleWord1Replacement + " " + wordLanguage1 + " | " + articleWord2Replacement + " " + wordLanguage2;
     }
 
+    public String toCSV(){
+        return articleWord1 + "," + wordLanguage1 + "," + articleWord2 + "," + wordLanguage2 + "\n";
+    }
+
     public String toTheString(){
         return wordLanguage1;
     }

@@ -77,11 +77,23 @@ public class WordDefinitionActivity extends AppCompatActivity implements Adapter
                     Toast.makeText(getApplicationContext(), "One of the field is empty", Toast.LENGTH_LONG).show();
                 }
                 else{
+                    String word1String, word2String;
+                    word1String = word1.getText().toString();
+                    word2String = word2.getText().toString();
+
+                    //erases unwanted white spaces
+                    while(Character.toString(word1String.charAt(0)).equals(" ")){
+                        word1String.substring(1);
+                    }
+                    while(Character.toString(word2String.charAt(0)).equals(" ")){
+                        word2String.substring(1);
+                    }
+
                     WordItem word = new WordItem(articleWord1Spinner.getSelectedItem().toString(),
-                            word1.getText().toString(),
+                            word1String,
                             word1StoredAtSpinner.getSelectedItem().toString(),
                             articleWord2Spinner.getSelectedItem().toString(),
-                            word2.getText().toString(),
+                            word2String,
                             word2StoredAtSpinner.getSelectedItem().toString(),
                             0,
                             0,
