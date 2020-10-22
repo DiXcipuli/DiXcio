@@ -9,6 +9,7 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.Spinner;
 import android.widget.Toast;
 
@@ -17,13 +18,19 @@ import androidx.appcompat.app.AppCompatActivity;
 public class WordDefinitionActivity extends AppCompatActivity implements AdapterView.OnItemSelectedListener {
 
     Spinner articleWord1Spinner, articleWord2Spinner, word1StoredAtSpinner, word2StoredAtSpinner;
-    Button saveWordButton;
+    Button saveWordButton, deleteWordButton;
+    ImageButton bookmarkButton;
     private String articleWord1, articleWord2, word1StoredAt, word2StoredAt;
     EditText word1, word2;
+    boolean modifyMode;
+    String previousWord1, previousWord2;
+    Integer bookmarked;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        bookmarked = 0;
 
         setContentView(R.layout.activity_word_definition);
 
@@ -33,9 +40,41 @@ public class WordDefinitionActivity extends AppCompatActivity implements Adapter
         articleWord2Spinner = (Spinner)findViewById(R.id.articleWord2Spinner);
         word1StoredAtSpinner = (Spinner)findViewById(R.id.word1StoredAtSpinner);
         word2StoredAtSpinner = (Spinner)findViewById(R.id.word2StoredAtSpinner);
+        bookmarkButton = (ImageButton)findViewById(R.id.bookmarkButton);
+        deleteWordButton = (Button)findViewById(R.id.deleteWordButton);
 
         word1.setHint(MainActivity.currentLanguage1);
         word2.setHint(MainActivity.currentLanguage2);
+
+        Bundle b = getIntent().getExtras();
+        modifyMode = b.getBoolean("modifyMode");
+
+        if(modifyMode){
+            word1.setText(b.getString("word1"));
+            word2.setText(b.getString("word2"));
+            previousWord1 = word1.getText().toString();
+            previousWord2 = word2.getText().toString();
+            deleteWordButton.setVisibility(View.VISIBLE);
+
+            if(b.getInt("bookmarked") == 1){
+                bookmarkButton.setImageResource(R.drawable.bookmark_red);
+                bookmarked = 1;
+            }
+
+        }
+        else{
+            deleteWordButton.setVisibility(View.GONE);
+        }
+
+        deleteWordButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                DataBase db = new DataBase(WordDefinitionActivity.this, MainActivity.currentProjectName);
+                db.deleteWord(previousWord1, previousWord2);
+                Toast.makeText(getApplicationContext(), "Word deleted!", Toast.LENGTH_LONG).show();
+                finish();
+            }
+        });
 
         word1.addTextChangedListener(new TextWatcher() {
             @Override
@@ -69,6 +108,20 @@ public class WordDefinitionActivity extends AppCompatActivity implements Adapter
             }
         });
 
+        bookmarkButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(bookmarked == 1){
+                    bookmarked = 0;
+                    bookmarkButton.setImageResource(R.drawable.bookmark);
+                }
+                else{
+                    bookmarked = 1;
+                    bookmarkButton.setImageResource(R.drawable.bookmark_red);
+                }
+            }
+        });
+
         saveWordButton = (Button)findViewById(R.id.saveWordButton);
         saveWordButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -99,13 +152,28 @@ public class WordDefinitionActivity extends AppCompatActivity implements Adapter
                             0,
                             (float)0,
                             "None",
-                            "");
+                            "",
+                            bookmarked);
 
-                    word1.setText("");
-                    word2.setText("");
+                    bookmarked = 0;
 
                     DataBase db = new DataBase(WordDefinitionActivity.this, MainActivity.currentProjectName);
-                    boolean success =  db.addOne(word);
+
+                    if(modifyMode){
+                        boolean success = db.replaceWord(word, previousWord1, previousWord2);
+                        Toast.makeText(getApplicationContext(), "Definition modified!", Toast.LENGTH_LONG).show();
+//                        Intent intent = new Intent(getApplicationContext(), WordBrowserActivity.class);
+//                        startActivity(intent);
+                        finish();
+                    }
+                    else {
+
+                        boolean success = db.addOne(word);
+                        Toast.makeText(getApplicationContext(), "Word saved!", Toast.LENGTH_LONG).show();
+                        word1.setText("");
+                        word2.setText("");
+                        bookmarkButton.setImageResource(R.drawable.bookmark);
+                    }
                 }
             }
         });

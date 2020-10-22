@@ -25,8 +25,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Vector;
 
-public class MainActivity extends AppCompatActivity implements DeleteDialog.DeleteDialogListener {
-    Button deleteProjectsButton;
+public class MainActivity extends AppCompatActivity {
     public static LinearLayout layout;
     public static String currentProjectName, currentLanguage1, currentLanguage2;
     public static Integer projectCount = 1;
@@ -39,25 +38,8 @@ public class MainActivity extends AppCompatActivity implements DeleteDialog.Dele
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        Button quitButton = (Button) findViewById(R.id.quit_app);
         Button newProjectButton = (Button) findViewById(R.id.new_project);
-        deleteProjectsButton = (Button)findViewById(R.id.deleteProjectsButton);
         layout = (LinearLayout) findViewById(R.id.projectLayout);
-
-        quitButton.setOnClickListener(new OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                finish();
-                System.exit(0);
-            }
-        });
-
-        deleteProjectsButton.setOnClickListener(new OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                openDialog();
-            }
-        });
 
         newProjectButton.setOnClickListener(new OnClickListener() {
             @Override
@@ -77,11 +59,6 @@ public class MainActivity extends AppCompatActivity implements DeleteDialog.Dele
         loadProject();
     }
 
-    public void openDialog(){
-        DeleteDialog dialog = new DeleteDialog();
-        dialog.show(getSupportFragmentManager(), "Delete Dialog");
-    }
-
     public void openSecondActivity(){
         Intent intent = new Intent(this, NewProjectActivity.class);
         startActivity(intent);
@@ -98,6 +75,11 @@ public class MainActivity extends AppCompatActivity implements DeleteDialog.Dele
             InputStreamReader isr = new InputStreamReader(fis);
             BufferedReader br = new BufferedReader(isr);
             StringBuffer sb = new StringBuffer();
+            projectList.clear();
+
+            for(int i = 1; i < layout.getChildCount(); i++){
+                layout.removeViewAt(i);
+            }
 
             while((message = br.readLine()) != null){
                 //sb.append(message + "\n");
@@ -114,7 +96,7 @@ public class MainActivity extends AppCompatActivity implements DeleteDialog.Dele
 
                 LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
                         LinearLayout.LayoutParams.FILL_PARENT, LinearLayout.LayoutParams.FILL_PARENT);
-                params.setMargins(0, 4, 0, 0);
+                params.setMargins(0, 8, 0, 0);
                 newCreatedProject.setLayoutParams(params);
                 //newCreatedProject.setId(R.id.project1Button);
 
@@ -144,22 +126,6 @@ public class MainActivity extends AppCompatActivity implements DeleteDialog.Dele
         catch(IOException e){
             e.printStackTrace();
         }
-    }
-
-    @Override
-    public void onYesClicked() {
-        Integer count = layout.getChildCount();
-        for(Integer i = 1; i < count; i++){
-            layout.removeViewAt(1);
-            this.deleteDatabase(projectList.elementAt(i-1).getProjectName());
-        }
-
-        projectList.clear();
-
-        File root = Environment.getExternalStorageDirectory();
-        File dir = new File(root.getAbsolutePath() + File.separator +  R.string.app_name);
-        File file = new File(dir + File.separator + R.string.app_name +  ".txt");
-        file.delete();
     }
 
     public void setMap(){

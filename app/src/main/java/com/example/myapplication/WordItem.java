@@ -17,8 +17,9 @@ public class WordItem {
 
     private String category;
     private String date;
+    private Integer bookmarked;
 
-    public WordItem(String articleWord1, String wordLanguage1, String word1StoredAt, String articleWord2, String wordLanguage2, String word2StoredAt, Integer count, Integer success, Float percentage, String category, String date) {
+    public WordItem(String articleWord1, String wordLanguage1, String word1StoredAt, String articleWord2, String wordLanguage2, String word2StoredAt, Integer count, Integer success, Float percentage, String category, String date, Integer bookmarked) {
         this.articleWord1 = articleWord1;
         this.wordLanguage1 = wordLanguage1;
         this.word1StoredAt = word1StoredAt;
@@ -33,6 +34,7 @@ public class WordItem {
 
         this.category = category;
         this.date = date;
+        this.bookmarked = bookmarked;
     }
 
     @Override
@@ -67,6 +69,30 @@ public class WordItem {
 
     public String getArticleWord1() {
         return articleWord1;
+    }
+
+    public Integer getCount() {
+        return count;
+    }
+
+    public Integer getSuccess() {
+        return success;
+    }
+
+    public Float getPercentage() {
+        return percentage;
+    }
+
+    public String getDate() {
+        return date;
+    }
+
+    public Integer getBookmarked() {
+        return bookmarked;
+    }
+
+    public void setBookmarked(Integer bookmarked) {
+        this.bookmarked = bookmarked;
     }
 
     public String getArticleWord2() {

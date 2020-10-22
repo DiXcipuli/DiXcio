@@ -7,7 +7,7 @@
     <string name="set_project_name">Project Name</string>
     <string name="set_language_1">Language 1</string>
     <string name="set_language_2">Language 2</string>
-    <string name="deleteProjects">Delete Projects</string>
+    <string name="deleteProjects">Delete Project</string>
     <string name="addWords">Add Words</string>
     <string name="browse">Browse</string>
     <string name="train">Train</string>
@@ -20,6 +20,8 @@
     <string name="wordBrowser">Word Browser</string>
     <string name="wordDefinition">Word Definition</string>
     <string name="guess">Guess?</string>
+    <string name="deleteWord">Delete Word</string>
+    <string name="dixcipuli">Visit DiXcipuli.com</string>
 
     <string name="csvText">To be tracked, your csv file must be named words.csv and be put in the public Download folder of your phone</string>
     <string name="cvsExportText">A csv file will be created containing all the words stored for this project. This file is located at Storage/Documents/DiXcio/${your_project_name}.csv</string>
@@ -38,6 +40,7 @@
         <item>Alphabet. order - Specific letter</item>
         <item>Last added</item>
         <item>Most failed</item>
+        <item>Bookmark</item>
     </string-array>
 
     <string-array name="bullshit">

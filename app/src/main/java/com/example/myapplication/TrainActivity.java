@@ -18,7 +18,7 @@ import java.util.List;
 public class TrainActivity extends AppCompatActivity implements AdapterView.OnItemSelectedListener {
 
     Button guessLanguage1, guessLanguage2, mainTrainPannel;
-    ImageButton successButton, failButton;
+    ImageButton successButton, failButton, bookmarkButton;
     Spinner orderSpinner, alphabetSpinner;
     List<WordItem> wordList;
     boolean boolGuessLanguage1;
@@ -26,6 +26,7 @@ public class TrainActivity extends AppCompatActivity implements AdapterView.OnIt
     TextView wordProgression;
     DataBase dataBase;
     Integer currentBrowseMode;
+    Integer currentAlphabetMode;
     ConstraintLayout background;
 
     Integer index;
@@ -35,6 +36,8 @@ public class TrainActivity extends AppCompatActivity implements AdapterView.OnIt
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_train);
 
+        currentAlphabetMode = 0;
+        currentBrowseMode = 0;
         index = 0;
         boolGuessLanguage1 = true;
         currentCardLanguage1 = true;
@@ -45,6 +48,7 @@ public class TrainActivity extends AppCompatActivity implements AdapterView.OnIt
         failButton = (ImageButton)findViewById(R.id.failButton);
         wordProgression = (TextView)findViewById(R.id.wordProgression);
         background = (ConstraintLayout)findViewById(R.id.background);
+        bookmarkButton = (ImageButton)findViewById(R.id.bookmarkButton);
 
         ArrayAdapter<CharSequence> orderAdapter = ArrayAdapter.createFromResource(this, R.array.browsingOrder, R.layout.spinner_row);
         orderAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
@@ -63,10 +67,33 @@ public class TrainActivity extends AppCompatActivity implements AdapterView.OnIt
         guessLanguage1.setText(MainActivity.currentLanguage1);
         guessLanguage2.setText(MainActivity.currentLanguage2);
 
+        successButton.setBackgroundResource(R.drawable.yellowblack);
+        failButton.setBackgroundResource(R.drawable.yellowblack);
+        successButton.setImageResource(R.drawable.tick_blue_black);
+        failButton.setImageResource(R.drawable.cross_blue_black);
+
+        bookmarkButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(index != -1){
+                    if(wordList.get(index).getBookmarked() == 1){
+                        wordList.get(index).setBookmarked(0);
+                        bookmarkButton.setImageResource(R.drawable.bookmark);
+                    }
+                    else{
+                        wordList.get(index).setBookmarked(1);
+                        bookmarkButton.setImageResource(R.drawable.bookmark_red);
+                    }
+                    DataBase dataBase = new DataBase(TrainActivity.this, MainActivity.currentProjectName);
+                    dataBase.replaceWord(wordList.get(index), wordList.get(index).getWordLanguage1(), wordList.get(index).getWordLanguage2());
+                }
+            }
+        });
+
         guessLanguage1.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                wordList = dataBase.getAllWords(currentBrowseMode);
+                wordList = dataBase.getAllWords(currentBrowseMode, null);
                 boolGuessLanguage1 = true;
                 currentCardLanguage1 = true;
                 background.setBackgroundColor(Color.parseColor("#33B5E6"));
@@ -75,27 +102,31 @@ public class TrainActivity extends AppCompatActivity implements AdapterView.OnIt
                 displayNewWord();
                 successButton.setBackgroundResource(R.drawable.yellowblack);
                 failButton.setBackgroundResource(R.drawable.yellowblack);
+                successButton.setImageResource(R.drawable.tick_blue_black);
+                failButton.setImageResource(R.drawable.cross_blue_black);
             }
         });
 
         guessLanguage2.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                wordList = dataBase.getAllWords(currentBrowseMode);
+                wordList = dataBase.getAllWords(currentBrowseMode, null);
                 boolGuessLanguage1 = false;
                 currentCardLanguage1 = false;
                 background.setBackgroundColor(Color.parseColor("#FFBB34"));
                 mainTrainPannel.setBackgroundResource(R.drawable.yellowblack);
                 successButton.setBackgroundResource(R.drawable.blueblack);
                 failButton.setBackgroundResource(R.drawable.blueblack);
+                successButton.setImageResource(R.drawable.tick_yellow_black);
+                failButton.setImageResource(R.drawable.cross_yellow_black);
                 index = 0;
                 displayNewWord();
             }
         });
 
-        currentBrowseMode = 4;
+        currentBrowseMode = 6;
         dataBase = new DataBase(getApplicationContext(), MainActivity.currentProjectName);
-        wordList = dataBase.getAllWords(currentBrowseMode);
+        wordList = dataBase.getAllWords(currentBrowseMode,null);
 
         successButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -137,21 +168,29 @@ public class TrainActivity extends AppCompatActivity implements AdapterView.OnIt
 
     @Override
     public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-        switch(parent.getId()){
-            case R.id.orderSpinner:
-                updateBrowseMode(position);
-                break;
-
-            case R.id.alphabetSpinner:
-                break;
-        }
-
+        index = 0;
+        updateBrowseMode();
     }
 
-    public void updateBrowseMode(Integer mode){
-        if(mode == 0 || mode ==2){
+    public void updateBrowseMode(){
+        if(orderSpinner.getSelectedItemPosition() == 0 || orderSpinner.getSelectedItemPosition() ==2){
             alphabetSpinner.setEnabled(false);
         }
+        else{
+            alphabetSpinner.setEnabled(true);
+        }
+
+        switch (orderSpinner.getSelectedItemPosition()){
+            case 0:
+                wordList = dataBase.getAllWords(6, null);
+                break;
+
+            case 1:
+                if(boolGuessLanguage1){
+                    wordList = dataBase.getAllWords(7, alphabetSpinner.getSelectedItem().toString());
+                }
+        }
+        displayNewWord();
     }
 
     @Override
@@ -160,12 +199,39 @@ public class TrainActivity extends AppCompatActivity implements AdapterView.OnIt
     }
 
     public void displayNewWord(){
-        wordProgression.setText(Integer.toString(index + 1) + " / " + Integer.toString(wordList.size()) + " words");
+
         if(index >= wordList.size()){
+            wordProgression.setText("0 / " + Integer.toString(wordList.size()) + " words");
             mainTrainPannel.setText("No more datas!");
+            bookmarkButton.setImageResource(R.drawable.bookmark);
+            if(boolGuessLanguage1){
+                bookmarkButton.setBackgroundResource(R.drawable.yellowblack);
+            }
+            else{
+                bookmarkButton.setBackgroundResource(R.drawable.blueblack);
+            }
             index = -1;
         }
         else{
+            wordProgression.setText(Integer.toString(index + 1) + " / " + Integer.toString(wordList.size()) + " words");
+            if(wordList.get(index).getBookmarked() == 1){
+                bookmarkButton.setImageResource(R.drawable.bookmark_red);
+                if(boolGuessLanguage1){
+                    bookmarkButton.setBackgroundResource(R.drawable.yellowblack);
+                }
+                else{
+                    bookmarkButton.setBackgroundResource(R.drawable.blueblack);
+                }
+            }
+            else{
+                bookmarkButton.setImageResource(R.drawable.bookmark);
+                if(boolGuessLanguage1){
+                    bookmarkButton.setBackgroundResource(R.drawable.yellowblack);
+                }
+                else{
+                    bookmarkButton.setBackgroundResource(R.drawable.blueblack);
+                }
+            }
 
             String article1 = wordList.get(index).getArticleWord1();
             String article2 = wordList.get(index).getArticleWord2();

@@ -2,15 +2,21 @@ package com.example.myapplication;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Environment;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-public class ProjectMenuActivity extends AppCompatActivity {
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
 
-    Button addWordsButton, browseWordsButton, trainButton, importCsvButton, exportCsvButton;
+public class ProjectMenuActivity extends AppCompatActivity implements DeleteDialog.DeleteDialogListener{
+
+    Button addWordsButton, browseWordsButton, trainButton, importCsvButton, exportCsvButton, deleteProjectButton;
     TextView subTitleProjectName;
 
     @Override
@@ -25,6 +31,14 @@ public class ProjectMenuActivity extends AppCompatActivity {
         subTitleProjectName.setText(MainActivity.currentProjectName);
         importCsvButton = (Button)findViewById(R.id.importCSVButtonMenu);
         exportCsvButton = (Button)findViewById(R.id.exportCSVButton);
+        deleteProjectButton = (Button)findViewById(R.id.deleteProject);
+
+        deleteProjectButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                openDialog();
+            }
+        });
 
         importCsvButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -64,8 +78,58 @@ public class ProjectMenuActivity extends AppCompatActivity {
 
     }
 
-    public void openNewWordActivity(){
+    public void openDialog(){
+        DeleteDialog dialog = new DeleteDialog();
+        dialog.show(getSupportFragmentManager(), "Delete Dialog");
+    }
+
+    @Override
+    public void onYesClicked() {
+        Integer index = 0;
+
+        for (int i = 0; i < MainActivity.projectList.size(); i++) {
+            if (MainActivity.projectList.get(i).getProjectName().equals(MainActivity.currentProjectName)) {
+                MainActivity.layout.removeViewAt(i + 1);
+                this.deleteDatabase(MainActivity.projectList.get(i).getProjectName());
+                MainActivity.projectList.remove(i);
+                break;
+            }
+        }
+
+        File root = Environment.getExternalStorageDirectory();
+        File dir = new File(root.getAbsolutePath() + File.separator + R.string.app_name);
+        File file = new File(dir + File.separator + R.string.app_name + ".txt");
+        file.delete();
+
+        String message = "";
+        for (int i = 0; i < MainActivity.projectList.size(); i++) {
+            message = message + MainActivity.projectList.get(i).getProjectName() + "," + MainActivity.projectList.get(i).getLanguage1() + "," + MainActivity.projectList.get(i).getLanguage2() + "\n";
+        }
+
+        try {
+            FileOutputStream fos = new FileOutputStream(file);
+            fos.write(message.getBytes());
+            fos.close();
+
+            //Reset
+            MainActivity.currentProjectName = "";
+            MainActivity.currentLanguage1 = "";
+            MainActivity.currentLanguage2 = "";
+
+
+            Intent intent = new Intent(this, MainActivity.class);
+            startActivity(intent);
+
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+        public void openNewWordActivity(){
         Intent intent = new Intent(this, WordDefinitionActivity.class);
+        intent.putExtra("modifyMode", false);
         startActivity(intent);
     }
 

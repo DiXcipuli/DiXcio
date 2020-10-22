@@ -30,6 +30,7 @@ public class DataBase extends SQLiteOpenHelper {
 
     public static String COLUMN_CATEGORY = "CATEGORY";
     public static String COLUMN_DATE = "DATE";
+    public static String COLUMN_BOOKMARKED = "BOOKMARKED";
 
 
     public DataBase(@Nullable Context context, String name) {
@@ -50,7 +51,8 @@ public class DataBase extends SQLiteOpenHelper {
                 COLUMN_SUCCESS +  " INTEGER, " +
                 COLUMN_PERCENTAGE +  " REAL, " +
                 COLUMN_CATEGORY +  " TEXT, " +
-                COLUMN_DATE + " TEXT)" ;
+                COLUMN_DATE +  " TEXT, " +
+                COLUMN_BOOKMARKED + " INTEGER)" ;
 
         db.execSQL(createTableStatement);
     }
@@ -58,6 +60,36 @@ public class DataBase extends SQLiteOpenHelper {
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
 
+    }
+
+    public boolean replaceWord(WordItem wi, String pv1, String pv2){
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues cv = new ContentValues();
+
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        Date date = new Date();
+
+        cv.put(COLUMN_ARTICLE_WORD_1, wi.getArticleWord1());
+        cv.put(COLUMN_WORD_1, wi.getWordLanguage1());
+        cv.put(COLUMN_WORD_1_STORED_AT, wi.getWord1StoredAt());
+        cv.put(COLUMN_ARTICLE_WORD_2, wi.getArticleWord2());
+        cv.put(COLUMN_WORD_2, wi.getWordLanguage2());
+        cv.put(COLUMN_WORD_2_STORED_AT, wi.getWord2StoredAt());
+        cv.put(COLUMN_COUNT, 0);
+        cv.put(COLUMN_SUCCESS, 0);
+        cv.put(COLUMN_PERCENTAGE, 0);
+        cv.put(COLUMN_CATEGORY, wi.getCategory());
+        cv.put(COLUMN_DATE, dateFormat.format(date));
+        cv.put(COLUMN_BOOKMARKED, wi.getBookmarked());
+
+        long insert = db.update(DATABASE_NAME,cv,COLUMN_WORD_1 + " = ? AND " + COLUMN_WORD_2 + " = ?",new String[]{pv1, pv2});
+        //long insert =  db.insert(DATABASE_NAME, null, cv);
+
+        if(insert < 0 )
+            return true;
+        else{
+            return false;
+        }
     }
 
     public boolean addOne(WordItem wi){
@@ -78,6 +110,7 @@ public class DataBase extends SQLiteOpenHelper {
         cv.put(COLUMN_PERCENTAGE, 0);
         cv.put(COLUMN_CATEGORY, wi.getCategory());
         cv.put(COLUMN_DATE, dateFormat.format(date));
+        cv.put(COLUMN_BOOKMARKED, wi.getBookmarked());
 
         long insert =  db.insert(DATABASE_NAME, null, cv);
 
@@ -88,7 +121,12 @@ public class DataBase extends SQLiteOpenHelper {
         }
     }
 
-    public List<WordItem> getAllWords(Integer mode){
+    public void deleteWord(String pw1, String pw2){
+        SQLiteDatabase db = this.getWritableDatabase();
+        db.delete(DATABASE_NAME, COLUMN_WORD_1 + " = ? AND " + COLUMN_WORD_2 + " = ?",new String[]{pw1, pw2});
+    }
+
+    public List<WordItem> getAllWords(Integer mode, String cdt1){
         List<WordItem> returnList = new ArrayList<>();
         String queryString = "SELECT * FROM " + DATABASE_NAME;
         switch (mode){
@@ -99,17 +137,32 @@ public class DataBase extends SQLiteOpenHelper {
 
             //alphabetical language 1
             case 2:
-                queryString = "SELECT * FROM " + DATABASE_NAME + " ORDER BY " + COLUMN_WORD_1 + " COLLATE NOCASE ASC";
+                queryString = "SELECT * FROM " + DATABASE_NAME + " ORDER BY " + COLUMN_WORD_1 + " COLLATE UNICODE ASC";
                 break;
 
             //alphabetical language 2
             case 3:
-                queryString = "SELECT * FROM " + DATABASE_NAME + " ORDER BY " + COLUMN_WORD_2 + " COLLATE NOCASE ASC";
+                queryString = "SELECT * FROM " + DATABASE_NAME + " ORDER BY " + COLUMN_WORD_2 + " COLLATE UNICODE ASC";
+                break;
+
+            //UNalphabetical language 1
+            case 4:
+                queryString = "SELECT * FROM " + DATABASE_NAME + " ORDER BY " + COLUMN_WORD_1 + " COLLATE UNICODE DESC";
+                break;
+
+            //UNalphabetical language 2
+            case 5:
+                queryString = "SELECT * FROM " + DATABASE_NAME + " ORDER BY " + COLUMN_WORD_2 + " COLLATE UNICODE DESC";
                 break;
 
             //random All
-            case 4:
+            case 6:
                 queryString = "SELECT * FROM " + DATABASE_NAME + " ORDER BY RANDOM()";
+                break;
+
+            //random specific letter language1
+            case 7:
+                queryString = "SELECT * FROM " + DATABASE_NAME + " WHERE " + COLUMN_WORD_1_STORED_AT + " = " + "'" + cdt1 + "'" + " COLLATE NOCASE" + " ORDER BY RANDOM()";
                 break;
         }
 
@@ -131,8 +184,9 @@ public class DataBase extends SQLiteOpenHelper {
                 Float percentage = cursor.getFloat(9);
                 String category = cursor.getString(10);
                 String date = cursor.getString(11);
+                Integer bookmarked = cursor.getInt(12);
 
-                WordItem wi = new WordItem(articleWord1, word1, word1StoredAt, articleWord2, word2, word2StoredAt, count, success, percentage, category, date);
+                WordItem wi = new WordItem(articleWord1, word1, word1StoredAt, articleWord2, word2, word2StoredAt, count, success, percentage, category, date, bookmarked);
 
                 returnList.add(wi);
 

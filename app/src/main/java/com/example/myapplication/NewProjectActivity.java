@@ -51,7 +51,9 @@ public class NewProjectActivity extends AppCompatActivity {
 
     public void openProjectMenuActivity(){
         Intent intent = new Intent(this, ProjectMenuActivity.class);
+        //intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
         startActivity(intent);
+        finish();
     }
 
     public void saveProject(final View view){
@@ -87,7 +89,6 @@ public class NewProjectActivity extends AppCompatActivity {
                     fos.write(message.getBytes());
                     fos.close();
 
-
                     //set the properties for button
                     final Button newCreatedProject = new Button(this);
                     newCreatedProject.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.FILL_PARENT, LinearLayout.LayoutParams.FILL_PARENT));
@@ -96,7 +97,7 @@ public class NewProjectActivity extends AppCompatActivity {
 
                     LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
                             LinearLayout.LayoutParams.FILL_PARENT, LinearLayout.LayoutParams.FILL_PARENT);
-                    params.setMargins(0, 4, 0, 0);
+                    params.setMargins(0, 8, 0, 0);
                     newCreatedProject.setLayoutParams(params);
 
                     newCreatedProject.setBackgroundColor(Color.parseColor("#FFBB34"));
@@ -111,7 +112,6 @@ public class NewProjectActivity extends AppCompatActivity {
                             Intent intent = new Intent(getApplicationContext(), ProjectMenuActivity.class);
                             startActivity(intent);
 
-
                         }
                     });
 
@@ -123,6 +123,8 @@ public class NewProjectActivity extends AppCompatActivity {
                     MainActivity.layout.addView(newCreatedProject);
 
                     Toast.makeText(getApplicationContext(), "Project Saved", Toast.LENGTH_LONG).show();
+
+                    openProjectMenuActivity();
                 } catch (FileNotFoundException e) {
                     e.printStackTrace();
                 } catch (IOException e) {
@@ -130,7 +132,7 @@ public class NewProjectActivity extends AppCompatActivity {
                 }
             }
 
-            openProjectMenuActivity();
+
         }
 
         else{//Project name/db already exists
