@@ -33,7 +33,7 @@ public class ExportCsvActivity extends AppCompatActivity {
                 if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.KITKAT) {
 
                     DataBase dataBase = new DataBase(getApplicationContext(), MainActivity.currentProjectName);
-                    List<WordItem> wordList = dataBase.getAllWords(1, null);
+                    List<WordItem> wordList = dataBase.getAllWords(1, null, null);
 
                     mDir = Environment.DIRECTORY_DOCUMENTS;
                     File root = Environment.getExternalStoragePublicDirectory(mDir);

@@ -126,7 +126,7 @@ public class DataBase extends SQLiteOpenHelper {
         db.delete(DATABASE_NAME, COLUMN_WORD_1 + " = ? AND " + COLUMN_WORD_2 + " = ?",new String[]{pw1, pw2});
     }
 
-    public List<WordItem> getAllWords(Integer mode, String cdt1){
+    public List<WordItem> getAllWords(Integer mode, String cdt1, Integer limit){
         List<WordItem> returnList = new ArrayList<>();
         String queryString = "SELECT * FROM " + DATABASE_NAME;
         switch (mode){
@@ -152,7 +152,7 @@ public class DataBase extends SQLiteOpenHelper {
 
             //UNalphabetical language 2
             case 5:
-                queryString = "SELECT * FROM " + DATABASE_NAME + " ORDER BY " + COLUMN_WORD_2 + " COLLATE UNICODE DESC";
+                queryString = "SELECT * FROM " + DATABASE_NAME + " ORDER BY " + COLUMN_WORD_2 + " COLLATE NOCASE DESC";
                 break;
 
             //random All
@@ -163,6 +163,21 @@ public class DataBase extends SQLiteOpenHelper {
             //random specific letter language1
             case 7:
                 queryString = "SELECT * FROM " + DATABASE_NAME + " WHERE " + COLUMN_WORD_1_STORED_AT + " = " + "'" + cdt1 + "'" + " COLLATE NOCASE" + " ORDER BY RANDOM()";
+                break;
+
+            //random specific letter language2
+            case 8:
+                queryString = "SELECT * FROM " + DATABASE_NAME + " WHERE " + COLUMN_WORD_2_STORED_AT + " = " + "'" + cdt1 + "'" + " COLLATE NOCASE" + " ORDER BY RANDOM()";
+                break;
+
+            //Random bookmark
+            case 9:
+                queryString = "SELECT * FROM " + DATABASE_NAME + " WHERE " + COLUMN_BOOKMARKED + " = 1 ORDER BY RANDOM() LIMIT " + Integer.toString(limit);
+                break;
+
+            // X Last added
+            case 10:
+                queryString = "SELECT * FROM " + DATABASE_NAME + " ORDER BY " + COLUMN_DATE + " DESC LIMIT " + Integer.toString(limit);
                 break;
         }
 

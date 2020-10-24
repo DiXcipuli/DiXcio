@@ -8,6 +8,7 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ListView;
+import android.widget.Spinner;
 import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -15,7 +16,7 @@ import androidx.constraintlayout.widget.ConstraintLayout;
 
 import java.util.List;
 
-public class WordBrowserActivity extends AppCompatActivity {
+public class WordBrowserActivity extends AppCompatActivity implements AdapterView.OnItemSelectedListener {
 
     ListView wordListView;
     Button word1Button, word2Button;
@@ -25,6 +26,7 @@ public class WordBrowserActivity extends AppCompatActivity {
     boolean language1;
     boolean alpha;
     Integer scrollPosition;
+    Spinner spinnerLetter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -36,6 +38,12 @@ public class WordBrowserActivity extends AppCompatActivity {
         word2Button = (Button)findViewById(R.id.language2Button);
         wordNumber = (TextView)findViewById(R.id.wordNumber);
         background = (ConstraintLayout)findViewById(R.id.background);
+        spinnerLetter = (Spinner)findViewById(R.id.spinnerLetter);
+
+        ArrayAdapter<CharSequence> articleWord1Adapter = ArrayAdapter.createFromResource(this, R.array.alphabetBis, R.layout.spinner_row);
+        articleWord1Adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        spinnerLetter.setAdapter(articleWord1Adapter);
+        spinnerLetter.setOnItemSelectedListener(this);
 
         word1Button.setText(MainActivity.currentLanguage1);
         word2Button.setText(MainActivity.currentLanguage2);
@@ -105,7 +113,7 @@ public class WordBrowserActivity extends AppCompatActivity {
 
     public void updateBrowser(Integer mode){
         DataBase dataBase = new DataBase(WordBrowserActivity.this, MainActivity.currentProjectName);
-        allWordsList = dataBase.getAllWords(mode, null);
+        allWordsList = dataBase.getAllWords(mode, null, null);
         ArrayAdapter wordArrayAdapter = new ArrayAdapter<WordItem>(WordBrowserActivity.this, android.R.layout.simple_list_item_1, allWordsList);
         wordListView.setAdapter(wordArrayAdapter);
 
@@ -141,5 +149,15 @@ public class WordBrowserActivity extends AppCompatActivity {
         }
 
         wordListView.setSelection(scrollPosition);
+    }
+
+    @Override
+    public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+
+    }
+
+    @Override
+    public void onNothingSelected(AdapterView<?> parent) {
+
     }
 }

@@ -6,6 +6,7 @@ import android.os.Environment;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -16,7 +17,7 @@ import java.io.IOException;
 
 public class ProjectMenuActivity extends AppCompatActivity implements DeleteDialog.DeleteDialogListener{
 
-    Button addWordsButton, browseWordsButton, trainButton, importCsvButton, exportCsvButton, deleteProjectButton;
+    Button addWordsButton, browseWordsButton, trainButton, importCsvButton, exportCsvButton, deleteProjectButton, setArticleButton;
     TextView subTitleProjectName;
 
     @Override
@@ -32,11 +33,20 @@ public class ProjectMenuActivity extends AppCompatActivity implements DeleteDial
         importCsvButton = (Button)findViewById(R.id.importCSVButtonMenu);
         exportCsvButton = (Button)findViewById(R.id.exportCSVButton);
         deleteProjectButton = (Button)findViewById(R.id.deleteProject);
+        setArticleButton = (Button)findViewById(R.id.setArticleButton);
 
         deleteProjectButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 openDialog();
+            }
+        });
+
+        setArticleButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(getApplicationContext(), SetArticleActivity.class);
+                startActivity(intent);
             }
         });
 
@@ -116,9 +126,9 @@ public class ProjectMenuActivity extends AppCompatActivity implements DeleteDial
             MainActivity.currentLanguage1 = "";
             MainActivity.currentLanguage2 = "";
 
-
             Intent intent = new Intent(this, MainActivity.class);
             startActivity(intent);
+            Toast.makeText(getApplicationContext(), "Project deleted!", Toast.LENGTH_LONG).show();
 
         } catch (FileNotFoundException e) {
             e.printStackTrace();

@@ -9,6 +9,8 @@ import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import org.apache.commons.lang3.StringUtils;
+
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -130,18 +132,6 @@ public class ImportCsvActivity extends AppCompatActivity {
 
                     //Check if definitions are not empty
                     if(str[1].length() != 0 && str[3].length() != 0){
-                        String word1StoredAt = Character.toString(str[1].charAt(0));
-                        String word2StoredAt = Character.toString(str[3].charAt(0));;
-
-                        if(!MainActivity.map.containsKey(word1StoredAt)){
-                            word1StoredAt = "Other";
-                        }
-                        if(!MainActivity.map.containsKey(word2StoredAt)){
-                            word2StoredAt = "Other";
-                        }
-
-                        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-                        Date date = new Date();
 
                         for(int i = 0; i < str.length; i++){
                             if(str[i].contains("'")){
@@ -156,6 +146,20 @@ public class ImportCsvActivity extends AppCompatActivity {
                                 }
                             }
                         }
+
+                        String word1StoredAt = StringUtils.stripAccents(Character.toString(str[1].charAt(0))).toLowerCase();
+                        String word2StoredAt = StringUtils.stripAccents(Character.toString(str[3].charAt(0))).toLowerCase();;
+
+                        if(!MainActivity.map.containsKey(word1StoredAt)){
+                            word1StoredAt = "other";
+                        }
+                        if(!MainActivity.map.containsKey(word2StoredAt)){
+                            word2StoredAt = "other";
+                        }
+
+                        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+                        Date date = new Date();
+
 
                         sb.append("'" + str[0] + "', '");
                         sb.append(str[1] + "', '");

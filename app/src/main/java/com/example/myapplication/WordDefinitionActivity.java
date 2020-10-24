@@ -15,6 +15,8 @@ import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import org.apache.commons.lang3.StringUtils;
+
 public class WordDefinitionActivity extends AppCompatActivity implements AdapterView.OnItemSelectedListener {
 
     Spinner articleWord1Spinner, articleWord2Spinner, word1StoredAtSpinner, word2StoredAtSpinner;
@@ -60,7 +62,6 @@ public class WordDefinitionActivity extends AppCompatActivity implements Adapter
                 bookmarkButton.setImageResource(R.drawable.bookmark_red);
                 bookmarked = 1;
             }
-
         }
         else{
             deleteWordButton.setVisibility(View.GONE);
@@ -87,8 +88,11 @@ public class WordDefinitionActivity extends AppCompatActivity implements Adapter
              @Override
              public void onTextChanged(CharSequence s, int start,
                                        int before, int count) {
-                 if (s.length() != 0 && MainActivity.map.containsKey(String.valueOf(s.charAt(0))))
-                    word1StoredAtSpinner.setSelection(MainActivity.map.get(String.valueOf(s.charAt(0))));
+                 if (s.length() != 0 && MainActivity.map.containsKey(StringUtils.stripAccents(String.valueOf(s.charAt(0))).toLowerCase()))
+                    word1StoredAtSpinner.setSelection(MainActivity.map.get(StringUtils.stripAccents(String.valueOf(s.charAt(0))).toLowerCase()));
+                 else{
+                     word1StoredAtSpinner.setSelection(26);
+                 }
              }
          });
 
@@ -103,8 +107,11 @@ public class WordDefinitionActivity extends AppCompatActivity implements Adapter
             @Override
             public void onTextChanged(CharSequence s, int start,
                                       int before, int count) {
-                if (s.length() != 0 && MainActivity.map.containsKey(String.valueOf(s.charAt(0))))
-                    word2StoredAtSpinner.setSelection(MainActivity.map.get(String.valueOf(s.charAt(0))));
+                if (s.length() != 0 && MainActivity.map.containsKey(StringUtils.stripAccents(String.valueOf(s.charAt(0))).toLowerCase()))
+                    word2StoredAtSpinner.setSelection(MainActivity.map.get(StringUtils.stripAccents(String.valueOf(s.charAt(0))).toLowerCase()));
+                else{
+                    word2StoredAtSpinner.setSelection(26);
+                }
             }
         });
 
@@ -144,10 +151,10 @@ public class WordDefinitionActivity extends AppCompatActivity implements Adapter
 
                     WordItem word = new WordItem(articleWord1Spinner.getSelectedItem().toString(),
                             word1String,
-                            word1StoredAtSpinner.getSelectedItem().toString(),
+                            word1StoredAtSpinner.getSelectedItem().toString().toLowerCase(),
                             articleWord2Spinner.getSelectedItem().toString(),
                             word2String,
-                            word2StoredAtSpinner.getSelectedItem().toString(),
+                            word2StoredAtSpinner.getSelectedItem().toString().toLowerCase(),
                             0,
                             0,
                             (float)0,
@@ -183,13 +190,13 @@ public class WordDefinitionActivity extends AppCompatActivity implements Adapter
 
 
         //articleWord1Adapter
-        ArrayAdapter<CharSequence> articleWord1Adapter = ArrayAdapter.createFromResource(this, R.array.germanArticle, R.layout.spinner_row);
+        ArrayAdapter<String> articleWord1Adapter = new ArrayAdapter<String>(getApplicationContext(), R.layout.spinner_row, MainActivity.articleListLanguage1);
         articleWord1Adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         articleWord1Spinner.setAdapter(articleWord1Adapter);
         articleWord1Spinner.setOnItemSelectedListener(this);
 
         //articleWord2Adapter
-        ArrayAdapter<CharSequence> articleWord2Adapter = ArrayAdapter.createFromResource(this, R.array.frenchArticle, R.layout.spinner_row);
+        ArrayAdapter<String> articleWord2Adapter = new ArrayAdapter<String>(getApplicationContext(), R.layout.spinner_row, MainActivity.articleListLanguage2);
         articleWord2Adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         articleWord2Spinner.setAdapter(articleWord2Adapter);
         articleWord2Spinner.setOnItemSelectedListener(this);
