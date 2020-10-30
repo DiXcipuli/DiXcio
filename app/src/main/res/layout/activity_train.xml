@@ -45,7 +45,7 @@
             android:layout_weight="0.3" />
 
         <Spinner
-            android:id="@+id/alphabetSpinner"
+            android:id="@+id/numberSpinner"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_weight="0.7" />
@@ -124,8 +124,27 @@
         android:background="@drawable/yellowblack"
         android:scaleType="fitCenter"
         app:layout_constraintBottom_toTopOf="@+id/failButton"
-        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintEnd_toStartOf="@id/modifyButton"
         app:layout_constraintStart_toStartOf="parent"
         app:srcCompat="@drawable/bookmark" />
+
+    <Button
+        android:id="@+id/modifyButton"
+        android:layout_width="0dp"
+        android:layout_height="50dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginLeft="8dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginRight="8dp"
+        android:layout_marginBottom="8dp"
+        android:textAllCaps="false"
+        android:background="@drawable/yellowblack"
+        android:text="@string/modify"
+        app:layout_constraintBottom_toTopOf="@+id/successButton"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/bookmarkButton"
+        app:layout_constraintTop_toBottomOf="@+id/mainTrainPannel"
+        tools:text="@string/modify" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

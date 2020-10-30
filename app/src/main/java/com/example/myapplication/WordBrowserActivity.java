@@ -1,32 +1,34 @@
 package com.example.myapplication;
 
 import android.content.Intent;
-import android.graphics.Color;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.View;
 import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ListView;
-import android.widget.Spinner;
 import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
 
-import java.util.List;
-
-public class WordBrowserActivity extends AppCompatActivity implements AdapterView.OnItemSelectedListener {
+public class WordBrowserActivity extends AppCompatActivity {
 
     ListView wordListView;
     Button word1Button, word2Button;
     TextView wordNumber;
     ConstraintLayout background;
-    List<WordItem> allWordsList;
-    boolean language1;
-    boolean alpha;
-    Integer scrollPosition;
-    Spinner spinnerLetter;
+    EditText search;
+
+    @Override
+    public void onBackPressed() {
+        MainActivity.browseScrollIndex = wordListView.getFirstVisiblePosition();
+        View v =  wordListView.getChildAt(0);
+        MainActivity.browserScrollTop = (v == null) ? 0 : (v.getTop() - wordListView.getPaddingTop());
+        super.onBackPressed();
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -38,37 +40,70 @@ public class WordBrowserActivity extends AppCompatActivity implements AdapterVie
         word2Button = (Button)findViewById(R.id.language2Button);
         wordNumber = (TextView)findViewById(R.id.wordNumber);
         background = (ConstraintLayout)findViewById(R.id.background);
-        spinnerLetter = (Spinner)findViewById(R.id.spinnerLetter);
-
-        ArrayAdapter<CharSequence> articleWord1Adapter = ArrayAdapter.createFromResource(this, R.array.alphabetBis, R.layout.spinner_row);
-        articleWord1Adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        spinnerLetter.setAdapter(articleWord1Adapter);
-        spinnerLetter.setOnItemSelectedListener(this);
+        search = (EditText)findViewById(R.id.search);
 
         word1Button.setText(MainActivity.currentLanguage1);
         word2Button.setText(MainActivity.currentLanguage2);
 
-        scrollPosition = 0;
-        language1 = true;
-        alpha = true;
+        search.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) { ;
+                MainActivity.browseSearch = s.toString();
+                if(!s.toString().isEmpty())
+                    MainActivity.wordBrowseList = MainActivity.dataBase.getWords(9, null, s.toString());
+                else{
+                    if(MainActivity.browseLanguage1){
+                        if(MainActivity.browseAlphabetical){
+                            updateBrowser(3);
+                        }
+                        else{
+                            updateBrowser(4);
+                        }
+                    }
+                    else{
+                        if(MainActivity.browseAlphabetical){
+                            updateBrowser(5);
+                        }
+                        else{
+                            updateBrowser(6);
+                        }
+                    }
+                }
+                BrowserAdapter wordArrayAdapter = new BrowserAdapter(getApplicationContext(),0, MainActivity.wordBrowseList);
+                wordListView.setAdapter(wordArrayAdapter);
+                wordNumber.setText(Integer.toString(MainActivity.wordBrowseList.size()) + " words");
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+
+            }
+        });
 
         word1Button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(language1){
-                    if(alpha){
-                        alpha = false;
+                search.setText("");
+                MainActivity.browseSearch = "";
+                if(MainActivity.browseLanguage1){
+                    if(MainActivity.browseAlphabetical){
+                        MainActivity.browseAlphabetical = false;
                         updateBrowser(4);
                     }
                     else{
-                        alpha = true;
-                        updateBrowser(2);
+                        MainActivity.browseAlphabetical = true;
+                        updateBrowser(3);
                     }
                 }
                 else{
-                    language1 = true;
-                    alpha = true;
-                    updateBrowser(2);
+                    MainActivity.browseLanguage1 = true;
+                    MainActivity.browseAlphabetical = true;
+                    updateBrowser(3);
                 }
             }
         });
@@ -76,20 +111,22 @@ public class WordBrowserActivity extends AppCompatActivity implements AdapterVie
         word2Button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(!language1){
-                    if(alpha){
-                        alpha = false;
-                        updateBrowser(5);
+                search.setText("");
+                MainActivity.browseSearch = "";
+                if(!MainActivity.browseLanguage1){
+                    if(MainActivity.browseAlphabetical){
+                        MainActivity.browseAlphabetical = false;
+                        updateBrowser(6);
                     }
                     else{
-                        alpha = true;
-                        updateBrowser(3);
+                        MainActivity.browseAlphabetical = true;
+                        updateBrowser(5);
                     }
                 }
                 else{
-                    language1 = false;
-                    alpha = true;
-                    updateBrowser(3);
+                    MainActivity.browseLanguage1 = false;
+                    MainActivity.browseAlphabetical = true;
+                    updateBrowser(5);
                 }
             }
         });
@@ -100,64 +137,52 @@ public class WordBrowserActivity extends AppCompatActivity implements AdapterVie
                 //Toast.makeText(getApplicationContext(), allWordsList.get(position).toString(), Toast.LENGTH_LONG).show();
                 Intent intent = new Intent(getApplicationContext(), WordDefinitionActivity.class);
                 intent.putExtra("modifyMode", true);
-                intent.putExtra("word1", allWordsList.get(position).getWordLanguage1());
-                intent.putExtra("word2", allWordsList.get(position).getWordLanguage2());
-                intent.putExtra("bookmarked", allWordsList.get(position).getBookmarked());
-                scrollPosition = wordListView.getPositionForView(view);
+                intent.putExtra("word", MainActivity.wordBrowseList.get(position));
+                MainActivity.browseScrollIndex = wordListView.getFirstVisiblePosition();
+                View v =  wordListView.getChildAt(0);
+                MainActivity.browserScrollTop = (v == null) ? 0 : (v.getTop() - wordListView.getPaddingTop());
                 startActivity(intent);
             }
         });
 
-        updateBrowser(2);
+        //updateBrowser(2);
     }
 
     public void updateBrowser(Integer mode){
-        DataBase dataBase = new DataBase(WordBrowserActivity.this, MainActivity.currentProjectName);
-        allWordsList = dataBase.getAllWords(mode, null, null);
-        ArrayAdapter wordArrayAdapter = new ArrayAdapter<WordItem>(WordBrowserActivity.this, android.R.layout.simple_list_item_1, allWordsList);
-        wordListView.setAdapter(wordArrayAdapter);
+        MainActivity.wordBrowseList = MainActivity.dataBase.getWords(mode, null, null);
 
-        if(mode == 2 || mode == 4){
-            background.setBackgroundColor(Color.parseColor("#33B5E6"));
-            wordListView.setBackgroundColor(Color.parseColor("#33B5E6"));
-        }
-        else{
-            background.setBackgroundColor(Color.parseColor("#FFBB34"));
-            wordListView.setBackgroundColor(Color.parseColor("#FFBB34"));
-        }
-        wordNumber.setText(Integer.toString(allWordsList.size()) + " words");
+        BrowserAdapter wordArrayAdapter = new BrowserAdapter(this,0, MainActivity.wordBrowseList);
+        wordListView.setAdapter(wordArrayAdapter);
+        wordNumber.setText(Integer.toString(MainActivity.wordBrowseList.size()) + " words");
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-        if(language1){
-            if(alpha){
-                updateBrowser(2);
+        search.setText(MainActivity.browseSearch);
+        if(!MainActivity.browseSearch.isEmpty()){
+            
+        }
+        if(MainActivity.browseLanguage1){
+            if(MainActivity.browseAlphabetical){
+                updateBrowser(3);
             }
             else{
                 updateBrowser(4);
             }
         }
         else{
-            if(alpha){
-                updateBrowser(3);
+            if(MainActivity.browseAlphabetical){
+                updateBrowser(5);
             }
             else{
-                updateBrowser(5);
+                updateBrowser(6);
             }
         }
 
-        wordListView.setSelection(scrollPosition);
-    }
+        wordListView.setSelectionFromTop(MainActivity.browseScrollIndex, MainActivity.browserScrollTop);
 
-    @Override
-    public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-
-    }
-
-    @Override
-    public void onNothingSelected(AdapterView<?> parent) {
-
+        //Not really good
+        MainActivity.wordHasBeenDeleted = false;
     }
 }

@@ -11,9 +11,6 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".SetArticleActivity"
-            android:configChanges="orientation"
-            android:screenOrientation="portrait" />
         <activity
             android:name=".ExportCsvActivity"
             android:configChanges="orientation"
@@ -33,7 +30,8 @@
         <activity
             android:name=".ProjectMenuActivity"
             android:configChanges="orientation"
-            android:screenOrientation="portrait" />
+            android:screenOrientation="portrait"
+            />
         <activity
             android:name=".WordDefinitionActivity"
             android:configChanges="orientation"

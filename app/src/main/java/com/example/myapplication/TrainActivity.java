@@ -1,7 +1,9 @@
 package com.example.myapplication;
 
+import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.util.TypedValue;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -13,20 +15,14 @@ import android.widget.TextView;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
 
-import java.util.List;
-
 public class TrainActivity extends AppCompatActivity implements AdapterView.OnItemSelectedListener {
 
-    Button guessLanguage1, guessLanguage2, mainTrainPannel;
+    Button guessLanguage1, guessLanguage2, mainTrainPannel, modifyButton;
     ImageButton successButton, failButton, bookmarkButton;
-    Spinner orderSpinner, alphabetSpinner;
-    List<WordItem> wordList;
-    boolean boolGuessLanguage1;
-    boolean currentCardLanguage1;
+    Spinner orderSpinner, numberSpinner;
     TextView wordProgression;
-    DataBase dataBase;
     ConstraintLayout background;
-    Integer index;
+    private Integer spinnerCount = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -35,7 +31,7 @@ public class TrainActivity extends AppCompatActivity implements AdapterView.OnIt
 
         //Define components
         orderSpinner = (Spinner)findViewById(R.id.orderSpinner);
-        alphabetSpinner = (Spinner)findViewById(R.id.alphabetSpinner);
+        numberSpinner = (Spinner)findViewById(R.id.numberSpinner);
         successButton = (ImageButton)findViewById(R.id.successButton);
         failButton = (ImageButton)findViewById(R.id.failButton);
         wordProgression = (TextView)findViewById(R.id.wordProgression);
@@ -44,6 +40,9 @@ public class TrainActivity extends AppCompatActivity implements AdapterView.OnIt
         guessLanguage1 = (Button)findViewById(R.id.guessLanguage1);
         guessLanguage2 = (Button)findViewById(R.id.guessLanguage2);
         mainTrainPannel = (Button)findViewById(R.id.mainTrainPannel);
+        modifyButton = (Button)findViewById(R.id.modifyButton);
+
+        mainTrainPannel.setTransformationMethod(null);
 
         //Set Spinners -------------------------------------------------------
         ArrayAdapter<CharSequence> orderAdapter = ArrayAdapter.createFromResource(this, R.array.browsingOrder, R.layout.spinner_row);
@@ -51,35 +50,46 @@ public class TrainActivity extends AppCompatActivity implements AdapterView.OnIt
         orderSpinner.setAdapter(orderAdapter);
         orderSpinner.setOnItemSelectedListener(this);
 
-        ArrayAdapter<CharSequence> alphabetAdapter = ArrayAdapter.createFromResource(this, R.array.alphabet, R.layout.spinner_row);
+        ArrayAdapter<CharSequence> alphabetAdapter = ArrayAdapter.createFromResource(this, R.array.numbers, R.layout.spinner_row);
         alphabetAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        alphabetSpinner.setAdapter(alphabetAdapter);
-        alphabetSpinner.setOnItemSelectedListener(this);
+        numberSpinner.setAdapter(alphabetAdapter);
+        numberSpinner.setOnItemSelectedListener(this);
         //---------------------------------------------------------------------
 
-        //Variables init
-        index = 0;
-        boolGuessLanguage1 = true;
-        currentCardLanguage1 = true;
         //Set language TextView
         guessLanguage1.setText(MainActivity.currentLanguage1);
         guessLanguage2.setText(MainActivity.currentLanguage2);
 
+        setDisplayGraphics();
+        displayWord();
+
         bookmarkButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(index != -1){
-                    if(wordList.get(index).getBookmarked() == 1){
-                        wordList.get(index).setBookmarked(0);
+                if(MainActivity.trainIndex != -1){
+                    if(MainActivity.wordTrainList.get(MainActivity.trainIndex).getBookmarked() == 1){
+                        MainActivity.wordTrainList.get(MainActivity.trainIndex).setBookmarked(0);
                         bookmarkButton.setImageResource(R.drawable.bookmark);
                     }
                     else{
-                        wordList.get(index).setBookmarked(1);
+                        MainActivity.wordTrainList.get(MainActivity.trainIndex).setBookmarked(1);
                         bookmarkButton.setImageResource(R.drawable.bookmark_red);
                     }
                     DataBase dataBase = new DataBase(TrainActivity.this, MainActivity.currentProjectName);
                     //replaceWord(WordItem, previousWord1, previousWord2)
-                    dataBase.replaceWord(wordList.get(index), wordList.get(index).getWordLanguage1(), wordList.get(index).getWordLanguage2());
+                    dataBase.replaceWord(MainActivity.wordTrainList.get(MainActivity.trainIndex), MainActivity.wordTrainList.get(MainActivity.trainIndex).getWordLanguage1(), MainActivity.wordTrainList.get(MainActivity.trainIndex).getWordLanguage2());
+                }
+            }
+        });
+
+        modifyButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(MainActivity.trainIndex != -1) {
+                    Intent intent = new Intent(getApplicationContext(), WordDefinitionActivity.class);
+                    intent.putExtra("modifyMode", true);
+                    intent.putExtra("word", MainActivity.wordTrainList.get(MainActivity.trainIndex));
+                    startActivity(intent);
                 }
             }
         });
@@ -87,8 +97,9 @@ public class TrainActivity extends AppCompatActivity implements AdapterView.OnIt
         guessLanguage1.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                setDisplayGraphics(1);
-                //updateBrowseMode();
+                MainActivity.isGuessModeLanguage1 = true;
+                MainActivity.isCurrentCardLanguage1 = true;
+                setDisplayGraphics();
                 displayWord();
             }
         });
@@ -96,8 +107,9 @@ public class TrainActivity extends AppCompatActivity implements AdapterView.OnIt
         guessLanguage2.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                setDisplayGraphics(2);
-                //updateBrowseMode();
+                MainActivity.isGuessModeLanguage1 = false;
+                MainActivity.isCurrentCardLanguage1 = false;
+                setDisplayGraphics();
                 displayWord();
             }
         });
@@ -105,8 +117,28 @@ public class TrainActivity extends AppCompatActivity implements AdapterView.OnIt
         successButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                index ++;
-                currentCardLanguage1 = boolGuessLanguage1;
+                if(MainActivity.trainIndex != -1){
+                    MainActivity.wordTrainList.get(MainActivity.trainIndex).setCount(MainActivity.wordTrainList.get(MainActivity.trainIndex).getCount() + 1);
+                    MainActivity.wordTrainList.get(MainActivity.trainIndex).setSuccess(MainActivity.wordTrainList.get(MainActivity.trainIndex).getSuccess() + 1);
+                    MainActivity.wordTrainList.get(MainActivity.trainIndex).setPercentage(((float)MainActivity.wordTrainList.get(MainActivity.trainIndex).getSuccess() / MainActivity.wordTrainList.get(MainActivity.trainIndex).getCount()) * 100);
+                    MainActivity.dataBase.replaceWord(MainActivity.wordTrainList.get(MainActivity.trainIndex), MainActivity.wordTrainList.get(MainActivity.trainIndex).getWordLanguage1(), MainActivity.wordTrainList.get(MainActivity.trainIndex).getWordLanguage2());
+                }
+                MainActivity.trainIndex ++;
+                MainActivity.isCurrentCardLanguage1 = MainActivity.isGuessModeLanguage1;
+                displayWord();
+            }
+        });
+
+        failButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(MainActivity.trainIndex != -1){
+                    MainActivity.wordTrainList.get(MainActivity.trainIndex).setCount(MainActivity.wordTrainList.get(MainActivity.trainIndex).getCount() + 1);
+                    MainActivity.wordTrainList.get(MainActivity.trainIndex).setPercentage(((float)MainActivity.wordTrainList.get(MainActivity.trainIndex).getSuccess() / MainActivity.wordTrainList.get(MainActivity.trainIndex).getCount()) * 100);
+                    MainActivity.dataBase.replaceWord(MainActivity.wordTrainList.get(MainActivity.trainIndex), MainActivity.wordTrainList.get(MainActivity.trainIndex).getWordLanguage1(), MainActivity.wordTrainList.get(MainActivity.trainIndex).getWordLanguage2());
+                }
+                MainActivity.trainIndex ++;
+                MainActivity.isCurrentCardLanguage1 = MainActivity.isGuessModeLanguage1;
                 displayWord();
             }
         });
@@ -114,124 +146,92 @@ public class TrainActivity extends AppCompatActivity implements AdapterView.OnIt
         mainTrainPannel.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(index != -1){
-                    String article1 = wordList.get(index).getArticleWord1();
-                    String article2 = wordList.get(index).getArticleWord2();
-                    if(article1.equals("None")){
-                        article1 = "";
-                    }
-                    if(article2.equals("None")){
-                        article2 = "";
-                    }
-                    if(currentCardLanguage1){
+                if(MainActivity.trainIndex != -1){
+                    if(MainActivity.isCurrentCardLanguage1){
                         mainTrainPannel.setBackgroundResource(R.drawable.yellowblack);
-                        mainTrainPannel.setText(article2 + " " + wordList.get(index).getWordLanguage2());
-                        currentCardLanguage1 = false;
+                        mainTrainPannel.setText(MainActivity.wordTrainList.get(MainActivity.trainIndex).getWordLanguage2());
+                        MainActivity.isCurrentCardLanguage1 = false;
                     }
                     else{
                         mainTrainPannel.setBackgroundResource(R.drawable.blueblack);
-                        mainTrainPannel.setText(article1 + " " + wordList.get(index).getWordLanguage1());
-                        currentCardLanguage1 = true;
+                        mainTrainPannel.setText(MainActivity.wordTrainList.get(MainActivity.trainIndex).getWordLanguage1());
+                        MainActivity.isCurrentCardLanguage1 = true;
                     }
                 }
             }
         });
     }
 
-    public void setDisplayGraphics(Integer mode){
-        if(mode == 1) {
-            boolGuessLanguage1 = true;
-            currentCardLanguage1 = true;
+    public void setDisplayGraphics(){
+        if(MainActivity.isGuessModeLanguage1) {
             background.setBackgroundColor(Color.parseColor("#33B5E6"));
-            mainTrainPannel.setBackgroundResource(R.drawable.blueblack);
             successButton.setBackgroundResource(R.drawable.yellowblack);
             failButton.setBackgroundResource(R.drawable.yellowblack);
             successButton.setImageResource(R.drawable.tick_blue_black);
             failButton.setImageResource(R.drawable.cross_blue_black);
+            bookmarkButton.setBackgroundResource(R.drawable.yellowblack);
+            modifyButton.setBackgroundResource(R.drawable.yellowblack);
         }
         else{
-            boolGuessLanguage1 = false;
-            currentCardLanguage1 = false;
             background.setBackgroundColor(Color.parseColor("#FFBB34"));
             mainTrainPannel.setBackgroundResource(R.drawable.yellowblack);
             successButton.setBackgroundResource(R.drawable.blueblack);
             failButton.setBackgroundResource(R.drawable.blueblack);
             successButton.setImageResource(R.drawable.tick_yellow_black);
             failButton.setImageResource(R.drawable.cross_yellow_black);
+            bookmarkButton.setBackgroundResource(R.drawable.blueblack);
+            modifyButton.setBackgroundResource(R.drawable.blueblack);
+        }
+        if(MainActivity.isCurrentCardLanguage1){
+            mainTrainPannel.setBackgroundResource(R.drawable.blueblack);
+        }
+        else{
+            mainTrainPannel.setBackgroundResource(R.drawable.yellowblack);
         }
     }
 
     @Override
     public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+        spinnerCount ++;
 
-        if(parent.getId() == R.id.orderSpinner)
+        if(parent.getId() == R.id.orderSpinner && spinnerCount > 3) {
             setSpinner();
             updateBrowseMode();
+        }
 
-        if(parent.getId() == R.id.alphabetSpinner){
+        if(parent.getId() == R.id.numberSpinner && spinnerCount > 3){
             updateBrowseMode();
         }
     }
 
     public void setSpinner(){
-        //Set Spinner to alphabet or Number depending on the current mode
-        ArrayAdapter<CharSequence> alphabetAdapter = null;
-        if(orderSpinner.getSelectedItemPosition() == 0 ||
-                orderSpinner.getSelectedItemPosition() == 1 ||
-                orderSpinner.getSelectedItemPosition() == 2 ||
-                orderSpinner.getSelectedItemPosition() == 3 ){
-
-            alphabetAdapter = ArrayAdapter.createFromResource(this, R.array.alphabet, R.layout.spinner_row);
-        }
-        else{ //Set numbers
-            alphabetAdapter = ArrayAdapter.createFromResource(this, R.array.numbers, R.layout.spinner_row);
-        }
-
-        alphabetAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        alphabetSpinner.setAdapter(alphabetAdapter);
-        alphabetSpinner.setOnItemSelectedListener(this);
-
         //Disable them if not needed in the current mode
-        if(orderSpinner.getSelectedItemPosition() == 0 || orderSpinner.getSelectedItemPosition() ==2){
-            alphabetSpinner.setSelection(0);
-            alphabetSpinner.setEnabled(false);
+        if(orderSpinner.getSelectedItemPosition() == 0){
+            numberSpinner.setEnabled(false);
         }
         else{ //Or enable them
-            alphabetSpinner.setEnabled(true);
+            numberSpinner.setEnabled(true);
+
         }
     }
 
     public void updateBrowseMode(){
-        index = 0;
-        dataBase = new DataBase(getApplicationContext(), MainActivity.currentProjectName);
-
+        MainActivity.trainIndex = 0;
         switch (orderSpinner.getSelectedItemPosition()){
             case 0: //All words in random
-                wordList = dataBase.getAllWords(6, null, null);
+                MainActivity.wordTrainList = MainActivity.dataBase.getWords(2, null, null);
                 break;
-
-            case 1:
-                if(boolGuessLanguage1){
-                    wordList = dataBase.getAllWords(7, alphabetSpinner.getSelectedItem().toString(), null);
-                }
-                else{
-                    wordList = dataBase.getAllWords(8, alphabetSpinner.getSelectedItem().toString(), null);
-                }
+            case 1://By date
+                MainActivity.wordTrainList = MainActivity.dataBase.getWords(8, Integer.parseInt(numberSpinner.getSelectedItem().toString()), null);
                 break;
-            case 2:
-                if(boolGuessLanguage1){
-                    wordList = dataBase.getAllWords(2, null, null);
-                }
-                else{
-                    wordList = dataBase.getAllWords(3, null, null);
-                }
+            case 2://Most failed
+                MainActivity.wordTrainList = MainActivity.dataBase.getWords(11, Integer.parseInt(numberSpinner.getSelectedItem().toString()), null);
                 break;
-
-            case 4://By date
-                wordList = dataBase.getAllWords(10, null, Integer.parseInt(alphabetSpinner.getSelectedItem().toString()));
+            case 3://Bookmark
+                MainActivity.wordTrainList = MainActivity.dataBase.getWords(7, Integer.parseInt(numberSpinner.getSelectedItem().toString()), null);
                 break;
-            case 6://Bookmark
-                wordList = dataBase.getAllWords(9, null, Integer.parseInt(alphabetSpinner.getSelectedItem().toString()));
+            case 4://Less met
+                MainActivity.wordTrainList = MainActivity.dataBase.getWords(12, Integer.parseInt(numberSpinner.getSelectedItem().toString()), null);
                 break;
         }
         displayWord();
@@ -244,59 +244,50 @@ public class TrainActivity extends AppCompatActivity implements AdapterView.OnIt
 
     public void displayWord(){
 
-        if(index >= wordList.size()){
-            wordProgression.setText("0 / " + Integer.toString(wordList.size()) + " words");
+        if(MainActivity.trainIndex >= MainActivity.wordTrainList.size() || MainActivity.trainIndex == -1){
+            wordProgression.setText("0 / " + Integer.toString(MainActivity.wordTrainList.size()) + " words");
             mainTrainPannel.setText("No more datas!");
             bookmarkButton.setImageResource(R.drawable.bookmark);
-            if(boolGuessLanguage1){
-                bookmarkButton.setBackgroundResource(R.drawable.yellowblack);
-            }
-            else{
-                bookmarkButton.setBackgroundResource(R.drawable.blueblack);
-            }
-            index = -1;
+            MainActivity.trainIndex = -1;
         }
         else{
-            wordProgression.setText(Integer.toString(index + 1) + " / " + Integer.toString(wordList.size()) + " words");
-            if(wordList.get(index).getBookmarked() == 1){
+            wordProgression.setText(Integer.toString(MainActivity.trainIndex + 1) + " / " + Integer.toString(MainActivity.wordTrainList.size()) + " words");
+            if(MainActivity.wordTrainList.get(MainActivity.trainIndex).getBookmarked() == 1){
                 bookmarkButton.setImageResource(R.drawable.bookmark_red);
-                if(boolGuessLanguage1){
-                    bookmarkButton.setBackgroundResource(R.drawable.yellowblack);
-                }
-                else{
-                    bookmarkButton.setBackgroundResource(R.drawable.blueblack);
-                }
             }
             else{
                 bookmarkButton.setImageResource(R.drawable.bookmark);
-                if(boolGuessLanguage1){
-                    bookmarkButton.setBackgroundResource(R.drawable.yellowblack);
-                }
-                else{
-                    bookmarkButton.setBackgroundResource(R.drawable.blueblack);
-                }
-            }
-
-            String article1 = wordList.get(index).getArticleWord1();
-            String article2 = wordList.get(index).getArticleWord2();
-            if(article1.equals("None")){
-                article1 = "";
-            }
-            if(article2.equals("None")){
-                article2 = "";
             }
 
             String word;
-            if(boolGuessLanguage1) {
-                word = article1 + " " + wordList.get(index).getWordLanguage1();
-                mainTrainPannel.setBackgroundResource(R.drawable.blueblack);
-
+            if(MainActivity.isCurrentCardLanguage1) {
+                word = MainActivity.wordTrainList.get(MainActivity.trainIndex).getWordLanguage1();
+                //mainTrainPannel.setBackgroundResource(R.drawable.blueblack);
             }
             else{
-                word = article2 + " " + wordList.get(index).getWordLanguage2();
-                mainTrainPannel.setBackgroundResource(R.drawable.yellowblack);
+                word = MainActivity.wordTrainList.get(MainActivity.trainIndex).getWordLanguage2();
+                //mainTrainPannel.setBackgroundResource(R.drawable.yellowblack);
             }
             mainTrainPannel.setText(word);
+            if(word.length() >= 10){
+                mainTrainPannel.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 40);
+            }
+            else{
+                mainTrainPannel.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 50);
+            }
         }
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        if(MainActivity.wordHasBeenDeleted){
+            MainActivity.wordHasBeenDeleted = false;
+            MainActivity.trainIndex ++;
+            MainActivity.isCurrentCardLanguage1 = MainActivity.isGuessModeLanguage1;
+
+        }
+
+        displayWord();
     }
 }

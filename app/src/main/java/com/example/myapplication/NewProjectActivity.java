@@ -93,7 +93,8 @@ public class NewProjectActivity extends AppCompatActivity {
                     final Button newCreatedProject = new Button(this);
                     newCreatedProject.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.FILL_PARENT, LinearLayout.LayoutParams.FILL_PARENT));
                     newCreatedProject.setText(newProjectName.getText().toString());
-                    newCreatedProject.setId(MainActivity.projectCount);
+                    newCreatedProject.setTransformationMethod(null);
+                    //newCreatedProject.setId(MainActivity.projectCount);
 
                     LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
                             LinearLayout.LayoutParams.FILL_PARENT, LinearLayout.LayoutParams.FILL_PARENT);

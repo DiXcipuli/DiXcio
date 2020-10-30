@@ -21,28 +21,37 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.List;
 import java.util.Vector;
 
 public class MainActivity extends AppCompatActivity {
     public static LinearLayout layout;
     public static String currentProjectName, currentLanguage1, currentLanguage2;
-    public static Integer projectCount = 1;
     public static Vector<ProjectItem>  projectList= new Vector<ProjectItem>();
-    public static Map<String, Integer> map;
+    public static boolean wordHasBeenDeleted = false;
 
-    public static Vector<String> articleListLanguage1 = new Vector<String>();
-    public static Vector<String> articleListLanguage2 = new Vector<String>();
+    public static DataBase dataBase;
+    public static List<WordItem> wordTrainList;
+    public static List<WordItem> wordBrowseList;
+    public static Integer trainIndex = 0;
+
+    //static variable to set the train activity
+    public static boolean isGuessModeLanguage1;
+    public static boolean isCurrentCardLanguage1;
+    public static Integer modeSpinnerIndex = 0;
+    public static Integer numberSpinnerIndex = 0;
+
+    //static variable to set the browse activity
+    public static Integer browseScrollIndex = 0;
+    public static Integer browserScrollTop = 0;
+    public static String browseSearch = "";
+    public static boolean browseLanguage1 = true;
+    public static boolean browseAlphabetical = true;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        setMap();
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
-        articleListLanguage1.add("None");
-        articleListLanguage2.add("None");
 
         Button newProjectButton = (Button) findViewById(R.id.new_project);
         layout = (LinearLayout) findViewById(R.id.projectLayout);
@@ -99,6 +108,7 @@ public class MainActivity extends AppCompatActivity {
                 newCreatedProject.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.FILL_PARENT, LinearLayout.LayoutParams.FILL_PARENT));
                 newCreatedProject.setText(splittedMessage[0]);
                 newCreatedProject.setBackgroundColor(Color.parseColor("#FFBB34"));
+                newCreatedProject.setTransformationMethod(null);
 
                 LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
                         LinearLayout.LayoutParams.FILL_PARENT, LinearLayout.LayoutParams.FILL_PARENT);
@@ -132,67 +142,5 @@ public class MainActivity extends AppCompatActivity {
         catch(IOException e){
             e.printStackTrace();
         }
-    }
-
-    public void setMap(){
-        map = new HashMap<String, Integer>();
-        map.put("a", 0);
-        map.put("b", 1);
-        map.put("c", 2);
-        map.put("d", 3);
-        map.put("e", 4);
-        map.put("f", 5);
-        map.put("g", 6);
-        map.put("h", 7);
-        map.put("i", 8);
-        map.put("j", 9);
-        map.put("k", 10);
-        map.put("l", 11);
-        map.put("m", 12);
-        map.put("n", 13);
-        map.put("o", 14);
-        map.put("p", 15);
-        map.put("q", 16);
-        map.put("r", 17);
-        map.put("s", 18);
-        map.put("t", 19);
-        map.put("u", 20);
-        map.put("v", 21);
-        map.put("w", 22);
-        map.put("x", 23);
-        map.put("y", 24);
-        map.put("z", 25);
-//        map.put("A", 0);
-//        map.put("B", 1);
-//        map.put("C", 2);
-//        map.put("D", 3);
-//        map.put("E", 4);
-//        map.put("F", 5);
-//        map.put("G", 6);
-//        map.put("H", 7);
-//        map.put("I", 8);
-//        map.put("J", 9);
-//        map.put("K", 10);
-//        map.put("L", 11);
-//        map.put("M", 12);
-//        map.put("N", 13);
-//        map.put("O", 14);
-//        map.put("P", 15);
-//        map.put("Q", 16);
-//        map.put("R", 17);
-//        map.put("S", 18);
-//        map.put("T", 19);
-//        map.put("U", 20);
-//        map.put("V", 21);
-//        map.put("W", 22);
-//        map.put("X", 23);
-//        map.put("Y", 24);
-//        map.put("Z", 25);
-//        map.put("à", 0);
-//        map.put("â", 0);
-//        map.put("é", 4);
-//        map.put("è", 4);
-//        map.put("ê", 25);
-//        map.put("ç", 2);
     }
 }

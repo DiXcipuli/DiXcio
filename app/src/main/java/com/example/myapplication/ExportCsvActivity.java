@@ -20,6 +20,14 @@ public class ExportCsvActivity extends AppCompatActivity {
     Button exportCsvButton;
 
     @Override
+    protected void onResume() {
+        super.onResume();
+        if(MainActivity.currentProjectName.equals("")){
+
+        }
+    }
+
+    @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_export_csv);
@@ -33,7 +41,7 @@ public class ExportCsvActivity extends AppCompatActivity {
                 if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.KITKAT) {
 
                     DataBase dataBase = new DataBase(getApplicationContext(), MainActivity.currentProjectName);
-                    List<WordItem> wordList = dataBase.getAllWords(1, null, null);
+                    List<WordItem> wordList = dataBase.getWords(3, null, null);
 
                     mDir = Environment.DIRECTORY_DOCUMENTS;
                     File root = Environment.getExternalStoragePublicDirectory(mDir);
@@ -69,13 +77,8 @@ public class ExportCsvActivity extends AppCompatActivity {
                         e.printStackTrace();
                         Toast.makeText(getApplicationContext(), "Export Failed", Toast.LENGTH_LONG).show();
                     }
-
-
                     scanFile(file, "text/csv");
-
-
                 }
-
             }
         });
     }

@@ -17,13 +17,29 @@ import java.io.IOException;
 
 public class ProjectMenuActivity extends AppCompatActivity implements DeleteDialog.DeleteDialogListener{
 
-    Button addWordsButton, browseWordsButton, trainButton, importCsvButton, exportCsvButton, deleteProjectButton, setArticleButton;
+    Button addWordsButton, browseWordsButton, trainButton, importCsvButton, exportCsvButton, deleteProjectButton;
     TextView subTitleProjectName;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_project_menu);
+
+        //Set static MainActivity values to default.
+        MainActivity.isCurrentCardLanguage1 = true;
+        MainActivity.isGuessModeLanguage1 = true;
+        MainActivity.wordHasBeenDeleted = false;
+        MainActivity.trainIndex = 0;
+        MainActivity.modeSpinnerIndex = 0;
+        MainActivity.numberSpinnerIndex = 0;
+        MainActivity.browseScrollIndex = 0;
+        MainActivity.browserScrollTop = 0;
+        MainActivity.browseSearch = "";
+        MainActivity.browseLanguage1 = true;
+        MainActivity.browseAlphabetical = true;
+        MainActivity.dataBase = new DataBase(ProjectMenuActivity.this,  MainActivity.currentProjectName);
+        MainActivity.wordTrainList =  MainActivity.dataBase.getWords(2, null, null);
+        MainActivity.wordBrowseList =  MainActivity.dataBase.getWords(3, null, null);
 
         addWordsButton = (Button)findViewById(R.id.addWordsButton);
         browseWordsButton = (Button)findViewById(R.id.browseButton);
@@ -33,20 +49,11 @@ public class ProjectMenuActivity extends AppCompatActivity implements DeleteDial
         importCsvButton = (Button)findViewById(R.id.importCSVButtonMenu);
         exportCsvButton = (Button)findViewById(R.id.exportCSVButton);
         deleteProjectButton = (Button)findViewById(R.id.deleteProject);
-        setArticleButton = (Button)findViewById(R.id.setArticleButton);
 
         deleteProjectButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 openDialog();
-            }
-        });
-
-        setArticleButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(getApplicationContext(), SetArticleActivity.class);
-                startActivity(intent);
             }
         });
 
@@ -74,6 +81,7 @@ public class ProjectMenuActivity extends AppCompatActivity implements DeleteDial
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(getApplicationContext(), TrainActivity.class);
+                //intent.setFlags(intent.FLAG_ACTIVITY_NEW_TASK);
                 startActivity(intent);
             }
         });

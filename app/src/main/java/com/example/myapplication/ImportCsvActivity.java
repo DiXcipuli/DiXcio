@@ -9,8 +9,6 @@ import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import org.apache.commons.lang3.StringUtils;
-
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -22,7 +20,7 @@ import java.util.Date;
 public class ImportCsvActivity extends AppCompatActivity {
 
     Button importCsvButton;
-    private Integer formatSize = 4;
+    private Integer formatSize = 2;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -51,7 +49,6 @@ public class ImportCsvActivity extends AppCompatActivity {
                     parseCsv(filename);
                 }
                 // then actually do something in another module
-
             }
         });
 // Set up and filter my extension I am looking for
@@ -77,7 +74,7 @@ public class ImportCsvActivity extends AppCompatActivity {
             while(true) {
                 try {
                     if (!((currentLine = br.readLine()) != null)) break;
-                    String[] currentStr = currentLine.split(",");
+                    String[] currentStr = currentLine.split(";");
                     if(currentStr.length != formatSize){
                         isFormatRespected = false;
                         break;
@@ -90,23 +87,17 @@ public class ImportCsvActivity extends AppCompatActivity {
 
             br.close();
 
-            //Toast.makeText(getApplicationContext(), Boolean.toString(isFormatRespected), Toast.LENGTH_LONG).show();
-
             if(isFormatRespected){
                 String line = "";
                 String tableName = MainActivity.currentProjectName;
-                String columns = DataBase.COLUMN_ARTICLE_WORD_1 + ", " +
-                        DataBase.COLUMN_WORD_1 + ", " +
-                        DataBase.COLUMN_WORD_1_STORED_AT + ", " +
-                        DataBase.COLUMN_ARTICLE_WORD_2 + ", " +
+                String columns = DataBase.COLUMN_WORD_1 + ", " +
                         DataBase.COLUMN_WORD_2 + ", " +
-                        DataBase.COLUMN_WORD_2_STORED_AT + ", " +
                         DataBase.COLUMN_COUNT + ", " +
                         DataBase.COLUMN_SUCCESS + ", " +
                         DataBase.COLUMN_PERCENTAGE + ", " +
                         DataBase.COLUMN_CATEGORY + ", " +
                         DataBase.COLUMN_DATE;
-                String str1 = "INSERT INTO " + tableName + " (" + columns + ") values(";
+                String str1 = "INSERT INTO " + tableName + " (" + columns + ") values('";
                 String str2 = ");";
 
                 SQLiteDatabase dataBase = new DataBase(getApplicationContext(), MainActivity.currentProjectName).getWritableDatabase();
@@ -128,53 +119,34 @@ public class ImportCsvActivity extends AppCompatActivity {
                     }
 
                     StringBuilder sb = new StringBuilder(str1);
-                    String[] str = line.split(",");
+                    String[] str = line.split(";");
 
-                    //Check if definitions are not empty
-                    if(str[1].length() != 0 && str[3].length() != 0){
+                    for(int i = 0; i < str.length; i++){
+                        if(str[i].contains("'")){
+                            str[i] = str[i].replace("'","''");
+                        }
 
-                        for(int i = 0; i < str.length; i++){
-                            if(str[i].contains("'")){
-                                str[i] = str[i].replace("'","''");
-                            }
-
-                            while(str[i].length() != 0){
-                                if(Character.toString(str[i].charAt(0)).equals(" "))
-                                    str[i] = str[i].substring(1);
-                                else{
-                                    break;
-                                }
+                        while(str[i].length() != 0){
+                            if(Character.toString(str[i].charAt(0)).equals(" "))
+                                str[i] = str[i].substring(1);
+                            else{
+                                break;
                             }
                         }
-
-                        String word1StoredAt = StringUtils.stripAccents(Character.toString(str[1].charAt(0))).toLowerCase();
-                        String word2StoredAt = StringUtils.stripAccents(Character.toString(str[3].charAt(0))).toLowerCase();;
-
-                        if(!MainActivity.map.containsKey(word1StoredAt)){
-                            word1StoredAt = "other";
-                        }
-                        if(!MainActivity.map.containsKey(word2StoredAt)){
-                            word2StoredAt = "other";
-                        }
-
-                        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-                        Date date = new Date();
-
-
-                        sb.append("'" + str[0] + "', '");
-                        sb.append(str[1] + "', '");
-                        sb.append(word1StoredAt + "', '");
-                        sb.append(str[2] + "', '");
-                        sb.append(str[3] + "', '");
-                        sb.append(word2StoredAt + "', '");
-                        sb.append("0', '");
-                        sb.append("0', '");
-                        sb.append("0', '");
-                        sb.append("None', '");
-                        sb.append(dateFormat.format(date).toString() + "'");
-                        sb.append(str2);
-                        dataBase.execSQL(sb.toString());
                     }
+
+                    SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+                    Date date = new Date();
+
+                    sb.append(str[0] + "', '");
+                    sb.append(str[1] + "', '");
+                    sb.append("0', '");
+                    sb.append("0', '");
+                    sb.append("0', '");
+                    sb.append("None', '");
+                    sb.append(dateFormat.format(date).toString() + "'");
+                    sb.append(str2);
+                    dataBase.execSQL(sb.toString());
                 }
                 dataBase.setTransactionSuccessful();
                 dataBase.endTransaction();
@@ -182,7 +154,7 @@ public class ImportCsvActivity extends AppCompatActivity {
 
             }
             else {
-                Toast.makeText(getApplicationContext(), "Format error at line: " + Integer.toString(lineIndex), Toast.LENGTH_LONG).show();
+                Toast.makeText(getApplicationContext(), "Format error at line: " + Integer.toString(lineIndex + 1), Toast.LENGTH_LONG).show();
             }
 
         } catch (FileNotFoundException e) {

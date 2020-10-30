@@ -1,15 +1,12 @@
 package com.example.myapplication;
 
-public class WordItem {
+import java.io.Serializable;
 
+public class WordItem implements Serializable {
 
-    private String articleWord1;
     private String wordLanguage1;
-    private String word1StoredAt;
 
-    private String articleWord2;
     private String wordLanguage2;
-    private String word2StoredAt;
 
     private Integer count;
     private Integer success;
@@ -19,14 +16,9 @@ public class WordItem {
     private String date;
     private Integer bookmarked;
 
-    public WordItem(String articleWord1, String wordLanguage1, String word1StoredAt, String articleWord2, String wordLanguage2, String word2StoredAt, Integer count, Integer success, Float percentage, String category, String date, Integer bookmarked) {
-        this.articleWord1 = articleWord1;
+    public WordItem(String wordLanguage1, String wordLanguage2, Integer count, Integer success, Float percentage, String category, String date, Integer bookmarked) {
         this.wordLanguage1 = wordLanguage1;
-        this.word1StoredAt = word1StoredAt;
-
-        this.articleWord2 = articleWord2;
         this.wordLanguage2 = wordLanguage2;
-        this.word2StoredAt = word2StoredAt;
 
         this.count = count;
         this.success = success;
@@ -37,38 +29,29 @@ public class WordItem {
         this.bookmarked = bookmarked;
     }
 
+    public void setWordLanguage1(String wordLanguage1) {
+        this.wordLanguage1 = wordLanguage1;
+    }
+
+    public void setWordLanguage2(String wordLanguage2) {
+        this.wordLanguage2 = wordLanguage2;
+    }
+
     @Override
     public String toString() {
-        String articleWord1Replacement = articleWord1, articleWord2Replacement = articleWord2;
-        if(articleWord1.equals("None")){
-            articleWord1Replacement = "";
-        }
+        return wordLanguage1 + " | " + wordLanguage2 + count + success + percentage;
+    }
 
-        if(articleWord2.equals("None")){
-            articleWord2Replacement = "";
-        }
-
-        return articleWord1Replacement + " " + wordLanguage1 + " | " + articleWord2Replacement + " " + wordLanguage2;
+    public String getInfo(){
+        return "Word encountered " + count + " time(s), success rate: " + percentage + "%";
     }
 
     public String toCSV(){
-        return articleWord1 + "," + wordLanguage1 + "," + articleWord2 + "," + wordLanguage2 + "\n";
+        return wordLanguage1 + ";" +  wordLanguage2 + "\n";
     }
 
     public String toTheString(){
         return wordLanguage1;
-    }
-
-    public String getWord1StoredAt() {
-        return word1StoredAt;
-    }
-
-    public String getWord2StoredAt() {
-        return word2StoredAt;
-    }
-
-    public String getArticleWord1() {
-        return articleWord1;
     }
 
     public Integer getCount() {
@@ -83,6 +66,18 @@ public class WordItem {
         return percentage;
     }
 
+    public void setCount(Integer count) {
+        this.count = count;
+    }
+
+    public void setSuccess(Integer success) {
+        this.success = success;
+    }
+
+    public void setPercentage(Float percentage) {
+        this.percentage = percentage;
+    }
+
     public String getDate() {
         return date;
     }
@@ -93,10 +88,6 @@ public class WordItem {
 
     public void setBookmarked(Integer bookmarked) {
         this.bookmarked = bookmarked;
-    }
-
-    public String getArticleWord2() {
-        return articleWord2;
     }
 
     public String getWordLanguage1() {

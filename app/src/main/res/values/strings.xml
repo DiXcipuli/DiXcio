@@ -14,6 +14,7 @@
     <string name="importCSV">Import CSV</string>
     <string name="exportCSV">Export CSV</string>
     <string name="save">Save</string>
+    <string name="saveWord">Save Word</string>
     <string name="back">Back</string>
     <string name="word1">Word 1</string>
     <string name="word2">Word 2</string>
@@ -25,41 +26,26 @@
     <string name="articles">articles</string>
     <string name="words">words</string>
     <string name="storedat">stored at</string>
-    <string name="setArticles">Set Articles</string>
-    <string name="addArticle">Add article</string>
-    <string name="addArticleLanguage1">article language1</string>
-    <string name="addArticleLanguage2">article language2</string>
-    <string name="deleteSelectedArticle">Delete selected</string>
+    <string name="search">Search</string>
+    <string name="modify">modify</string>
 
     <string name="csvText">To be tracked, your csv file must be named words.csv and be put in the public Download folder of your phone</string>
     <string name="cvsExportText">A csv file will be created containing all the words stored for this project. This file is located at Storage/Documents/DiXcio/${your_project_name}.csv</string>
 
-    <string-array name="germanArticle">
-        <item>None</item>
-        <item>Der</item>
-        <item>Das</item>
-        <item>Die</item>
-    </string-array>
-
     <string-array name="numbers">
-        <item>5</item>
-        <item>10</item>
         <item>20</item>
         <item>50</item>
         <item>100</item>
         <item>200</item>
         <item>500</item>
-        <item>All</item>
     </string-array>
 
     <string-array name="browsingOrder">
         <item>Random order - All words</item>
-        <item>Random order - Specific letter</item>
-        <item>Alphabet. order - all words</item>
-        <item>Alphabet. order - Specific letter</item>
         <item>Last added</item>
         <item>Most failed</item>
         <item>Bookmark</item>
+        <item>Less met</item>
     </string-array>
 
     <string-array name="bullshit">
@@ -71,72 +57,5 @@
         <item>Getting your bank credentials, please hold</item>
         <item>Breaking the firewall, it may take a while</item>
 
-    </string-array>
-
-    <string-array name="frenchArticle">
-        <item>None</item>
-        <item>Le</item>
-        <item>La</item>
-    </string-array>
-
-    <string-array name="alphabet">
-        <item>A</item>
-        <item>B</item>
-        <item>C</item>
-        <item>D</item>
-        <item>E</item>
-        <item>F</item>
-        <item>G</item>
-        <item>H</item>
-        <item>I</item>
-        <item>J</item>
-        <item>K</item>
-        <item>L</item>
-        <item>M</item>
-        <item>N</item>
-        <item>O</item>
-        <item>P</item>
-        <item>Q</item>
-        <item>R</item>
-        <item>S</item>
-        <item>T</item>
-        <item>U</item>
-        <item>V</item>
-        <item>W</item>
-        <item>X</item>
-        <item>Y</item>
-        <item>Z</item>
-        <item>other</item>
-    </string-array>
-
-    <string-array name="alphabetBis">
-        <item>All</item>
-        <item>A</item>
-        <item>B</item>
-        <item>C</item>
-        <item>D</item>
-        <item>E</item>
-        <item>F</item>
-        <item>G</item>
-        <item>H</item>
-        <item>I</item>
-        <item>J</item>
-        <item>K</item>
-        <item>L</item>
-        <item>M</item>
-        <item>N</item>
-        <item>O</item>
-        <item>P</item>
-        <item>Q</item>
-        <item>R</item>
-        <item>S</item>
-        <item>T</item>
-        <item>U</item>
-        <item>V</item>
-        <item>W</item>
-        <item>X</item>
-        <item>Y</item>
-        <item>Z</item>
-        <item>other</item>
     </string-array>
 </resources>
