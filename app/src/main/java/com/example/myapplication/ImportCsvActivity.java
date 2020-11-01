@@ -1,5 +1,6 @@
 package com.example.myapplication;
 
+import android.content.Intent;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.util.Log;
@@ -21,6 +22,17 @@ public class ImportCsvActivity extends AppCompatActivity {
 
     Button importCsvButton;
     private Integer formatSize = 2;
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        if(MainActivity.currentProjectName.isEmpty()){
+            Toast.makeText(getApplicationContext(), "Reset Security", Toast.LENGTH_LONG).show();
+            Intent intent = new Intent(getApplicationContext(), MainActivity.class);
+            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+            startActivity(intent);
+        }
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

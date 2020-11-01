@@ -132,9 +132,6 @@ public class MainActivity extends AppCompatActivity {
                 layout.addView(newCreatedProject);
             }
 
-            
-
-
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         }

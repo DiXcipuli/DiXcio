@@ -1,5 +1,6 @@
 package com.example.myapplication;
 
+import android.content.Intent;
 import android.media.MediaScannerConnection;
 import android.os.Bundle;
 import android.os.Environment;
@@ -22,8 +23,11 @@ public class ExportCsvActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        if(MainActivity.currentProjectName.equals("")){
-
+        if(MainActivity.currentProjectName.isEmpty()){
+            Toast.makeText(getApplicationContext(), "Reset Security", Toast.LENGTH_LONG).show();
+            Intent intent = new Intent(getApplicationContext(), MainActivity.class);
+            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+            startActivity(intent);
         }
     }
 

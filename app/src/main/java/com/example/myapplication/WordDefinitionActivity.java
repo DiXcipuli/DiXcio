@@ -1,5 +1,6 @@
 package com.example.myapplication;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.View;
@@ -22,6 +23,17 @@ public class WordDefinitionActivity extends AppCompatActivity {
     Integer bookmarked;
     TextView wordInfo;
     WordItem wordItem;
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        if(MainActivity.currentProjectName.isEmpty()){
+            Toast.makeText(getApplicationContext(), "Reset Security", Toast.LENGTH_LONG).show();
+            Intent intent = new Intent(getApplicationContext(), MainActivity.class);
+            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+            startActivity(intent);
+        }
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -71,6 +83,16 @@ public class WordDefinitionActivity extends AppCompatActivity {
                 db.deleteWord(previousWord1, previousWord2);
                 Toast.makeText(getApplicationContext(), "Word deleted!", Toast.LENGTH_LONG).show();
                 MainActivity.wordHasBeenDeleted = true;
+
+                //Refresh TrainDatabase list.
+                //Set static MainActivity values to default.
+                MainActivity.isCurrentCardLanguage1 = true;
+                MainActivity.isGuessModeLanguage1 = true;
+                MainActivity.trainIndex = 0;
+                MainActivity.modeSpinnerIndex = 0;
+                MainActivity.numberSpinnerIndex = 0;
+                MainActivity.wordTrainList =  MainActivity.dataBase.getWords(2, null, null);
+
                 finish();
             }
         });

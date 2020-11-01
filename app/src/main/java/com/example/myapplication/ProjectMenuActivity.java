@@ -21,6 +21,17 @@ public class ProjectMenuActivity extends AppCompatActivity implements DeleteDial
     TextView subTitleProjectName;
 
     @Override
+    protected void onResume() {
+        super.onResume();
+        if(MainActivity.currentProjectName.isEmpty()){
+            Toast.makeText(getApplicationContext(), "Reset Security", Toast.LENGTH_LONG).show();
+            Intent intent = new Intent(getApplicationContext(), MainActivity.class);
+            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+            startActivity(intent);
+        }
+    }
+
+    @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_project_menu);

@@ -11,6 +11,7 @@ import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
@@ -62,6 +63,9 @@ public class TrainActivity extends AppCompatActivity implements AdapterView.OnIt
 
         setDisplayGraphics();
         displayWord();
+        orderSpinner.setSelection(MainActivity.modeSpinnerIndex);
+        numberSpinner.setSelection(MainActivity.numberSpinnerIndex);
+        setSpinner();
 
         bookmarkButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -194,12 +198,14 @@ public class TrainActivity extends AppCompatActivity implements AdapterView.OnIt
     public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
         spinnerCount ++;
 
-        if(parent.getId() == R.id.orderSpinner && spinnerCount > 3) {
+        if(parent.getId() == R.id.orderSpinner && spinnerCount > 2) {
+            MainActivity.modeSpinnerIndex = position;
             setSpinner();
             updateBrowseMode();
         }
 
-        if(parent.getId() == R.id.numberSpinner && spinnerCount > 3){
+        if(parent.getId() == R.id.numberSpinner && spinnerCount > 2){
+            MainActivity.numberSpinnerIndex = position;
             updateBrowseMode();
         }
     }
@@ -281,13 +287,21 @@ public class TrainActivity extends AppCompatActivity implements AdapterView.OnIt
     @Override
     protected void onResume() {
         super.onResume();
-        if(MainActivity.wordHasBeenDeleted){
-            MainActivity.wordHasBeenDeleted = false;
-            MainActivity.trainIndex ++;
-            MainActivity.isCurrentCardLanguage1 = MainActivity.isGuessModeLanguage1;
-
+        if(MainActivity.currentProjectName.isEmpty()){
+            Toast.makeText(getApplicationContext(), "Reset Security", Toast.LENGTH_LONG).show();
+            Intent intent = new Intent(getApplicationContext(), MainActivity.class);
+            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+            startActivity(intent);
+        }
+        else{
+            if(MainActivity.wordHasBeenDeleted){
+                MainActivity.wordHasBeenDeleted = false;
+                MainActivity.trainIndex ++;
+                MainActivity.isCurrentCardLanguage1 = MainActivity.isGuessModeLanguage1;
+            }
+            displayWord();
         }
 
-        displayWord();
+
     }
 }

@@ -60,8 +60,20 @@ public class NewProjectActivity extends AppCompatActivity {
         String state;
         state = Environment.getExternalStorageState();
 
+        boolean databaseNameContainsSpace = false;
+        String projectName = newProjectName.getText().toString();
+        for(int i = 0; i < projectName.length(); i++){
+            if(Character.toString(projectName.charAt(i)).equals(" ")){
+                    databaseNameContainsSpace = true;
+            }
+        }
+
         if(Character.isDigit(newProjectName.getText().toString().charAt(0))){
             Toast.makeText(getApplicationContext(), "Project name can't start with a digit, please modify it", Toast.LENGTH_LONG).show();
+        }
+
+        else if(databaseNameContainsSpace){
+            Toast.makeText(getApplicationContext(), "Project name can't have any space", Toast.LENGTH_LONG).show();
         }
 
         else if(!getApplicationContext().getDatabasePath(newProjectName.getText().toString()).exists()) {

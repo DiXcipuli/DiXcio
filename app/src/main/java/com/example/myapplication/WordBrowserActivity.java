@@ -10,6 +10,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
@@ -54,8 +55,12 @@ public class WordBrowserActivity extends AppCompatActivity {
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) { ;
                 MainActivity.browseSearch = s.toString();
-                if(!s.toString().isEmpty())
+                if(!s.toString().isEmpty()) {
                     MainActivity.wordBrowseList = MainActivity.dataBase.getWords(9, null, s.toString());
+                    BrowserAdapter wordArrayAdapter = new BrowserAdapter(getApplicationContext(), 0, MainActivity.wordBrowseList);
+                    wordListView.setAdapter(wordArrayAdapter);
+                    wordNumber.setText(Integer.toString(MainActivity.wordBrowseList.size()) + " words");
+                }
                 else{
                     if(MainActivity.browseLanguage1){
                         if(MainActivity.browseAlphabetical){
@@ -74,9 +79,6 @@ public class WordBrowserActivity extends AppCompatActivity {
                         }
                     }
                 }
-                BrowserAdapter wordArrayAdapter = new BrowserAdapter(getApplicationContext(),0, MainActivity.wordBrowseList);
-                wordListView.setAdapter(wordArrayAdapter);
-                wordNumber.setText(Integer.toString(MainActivity.wordBrowseList.size()) + " words");
             }
 
             @Override
@@ -159,30 +161,45 @@ public class WordBrowserActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        search.setText(MainActivity.browseSearch);
-        if(!MainActivity.browseSearch.isEmpty()){
-            
+
+        if(MainActivity.currentProjectName.isEmpty()){
+            Toast.makeText(getApplicationContext(), "Reset Security", Toast.LENGTH_LONG).show();
+            Intent intent = new Intent(getApplicationContext(), MainActivity.class);
+            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+            startActivity(intent);
         }
-        if(MainActivity.browseLanguage1){
-            if(MainActivity.browseAlphabetical){
-                updateBrowser(3);
-            }
-            else{
-                updateBrowser(4);
-            }
-        }
+
         else{
-            if(MainActivity.browseAlphabetical){
-                updateBrowser(5);
+            search.setText(MainActivity.browseSearch);
+            if(!MainActivity.browseSearch.isEmpty()){
+                MainActivity.wordBrowseList = MainActivity.dataBase.getWords(9, null, MainActivity.browseSearch);
+                BrowserAdapter wordArrayAdapter = new BrowserAdapter(getApplicationContext(), 0, MainActivity.wordBrowseList);
+                wordListView.setAdapter(wordArrayAdapter);
+                wordNumber.setText(Integer.toString(MainActivity.wordBrowseList.size()) + " words");
             }
-            else{
-                updateBrowser(6);
+            else {
+                if (MainActivity.browseLanguage1) {
+                    if (MainActivity.browseAlphabetical) {
+                        updateBrowser(3);
+                    } else {
+                        updateBrowser(4);
+                    }
+                } else {
+                    if (MainActivity.browseAlphabetical) {
+                        updateBrowser(5);
+                    } else {
+                        updateBrowser(6);
+                    }
+                }
             }
+
+            wordListView.setSelectionFromTop(MainActivity.browseScrollIndex, MainActivity.browserScrollTop);
+
+            //Not really good
+            MainActivity.wordHasBeenDeleted = false;
+
         }
 
-        wordListView.setSelectionFromTop(MainActivity.browseScrollIndex, MainActivity.browserScrollTop);
 
-        //Not really good
-        MainActivity.wordHasBeenDeleted = false;
     }
 }
