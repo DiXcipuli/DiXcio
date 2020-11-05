@@ -1,4 +1,4 @@
-package com.example.myapplication;
+package com.DiXcipuli.DiXcio;
 
 import android.content.Context;
 

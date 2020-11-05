@@ -1,4 +1,4 @@
-package com.example.myapplication;
+package com.DiXcipuli.DiXcio;
 
 import android.content.Intent;
 import android.media.MediaScannerConnection;
@@ -23,7 +23,7 @@ public class ExportCsvActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        if(MainActivity.currentProjectName.isEmpty()){
+        if(MainActivity.currentProjectName == null){
             Toast.makeText(getApplicationContext(), "Reset Security", Toast.LENGTH_LONG).show();
             Intent intent = new Intent(getApplicationContext(), MainActivity.class);
             intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);

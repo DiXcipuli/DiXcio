@@ -1,4 +1,4 @@
-package com.example.myapplication;
+package com.DiXcipuli.DiXcio;
 
 import android.Manifest;
 import android.content.Intent;
@@ -11,7 +11,9 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.LinearLayout;
+import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 
@@ -74,6 +76,20 @@ public class MainActivity extends AppCompatActivity {
         loadProject();
     }
 
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+
+        //super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        if(grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+        }
+        else{
+            Toast.makeText(getApplicationContext(), "Definition modified!", Toast.LENGTH_LONG).show();
+
+            this.finish();
+            System.exit(0);
+        }
+    }
+
     public void openSecondActivity(){
         Intent intent = new Intent(this, NewProjectActivity.class);
         startActivity(intent);
@@ -81,8 +97,9 @@ public class MainActivity extends AppCompatActivity {
 
     public void loadProject() {
         File root = Environment.getExternalStorageDirectory();
-        File dir = new File(root.getAbsolutePath() + File.separator +  R.string.app_name);
-        File file = new File(dir + File.separator + R.string.app_name +  ".txt");
+        //File dir = new File(root.getAbsolutePath() + File.separator +  R.string.app_name);
+        File dir = new File(getApplicationInfo().dataDir);
+        File file = new File(dir + File.separator +  "DiXcioProjects.txt");
 
         String message;
         try {

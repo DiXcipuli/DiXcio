@@ -1,4 +1,4 @@
-package com.example.myapplication;
+package com.DiXcipuli.DiXcio;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -139,6 +139,7 @@ public class WordBrowserActivity extends AppCompatActivity {
                 //Toast.makeText(getApplicationContext(), allWordsList.get(position).toString(), Toast.LENGTH_LONG).show();
                 Intent intent = new Intent(getApplicationContext(), WordDefinitionActivity.class);
                 intent.putExtra("modifyMode", true);
+                intent.putExtra("modifiedFromBrowser", true);
                 intent.putExtra("word", MainActivity.wordBrowseList.get(position));
                 MainActivity.browseScrollIndex = wordListView.getFirstVisiblePosition();
                 View v =  wordListView.getChildAt(0);
@@ -162,7 +163,7 @@ public class WordBrowserActivity extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
 
-        if(MainActivity.currentProjectName.isEmpty()){
+        if(MainActivity.currentProjectName == null){
             Toast.makeText(getApplicationContext(), "Reset Security", Toast.LENGTH_LONG).show();
             Intent intent = new Intent(getApplicationContext(), MainActivity.class);
             intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);

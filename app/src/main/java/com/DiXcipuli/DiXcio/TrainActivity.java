@@ -1,4 +1,4 @@
-package com.example.myapplication;
+package com.DiXcipuli.DiXcio;
 
 import android.content.Intent;
 import android.graphics.Color;
@@ -92,6 +92,7 @@ public class TrainActivity extends AppCompatActivity implements AdapterView.OnIt
                 if(MainActivity.trainIndex != -1) {
                     Intent intent = new Intent(getApplicationContext(), WordDefinitionActivity.class);
                     intent.putExtra("modifyMode", true);
+                    intent.putExtra("modifiedFromBrowser", false);
                     intent.putExtra("word", MainActivity.wordTrainList.get(MainActivity.trainIndex));
                     startActivity(intent);
                 }
@@ -130,6 +131,13 @@ public class TrainActivity extends AppCompatActivity implements AdapterView.OnIt
                 MainActivity.trainIndex ++;
                 MainActivity.isCurrentCardLanguage1 = MainActivity.isGuessModeLanguage1;
                 displayWord();
+
+                if(MainActivity.isGuessModeLanguage1){
+                    mainTrainPannel.setBackgroundResource(R.drawable.blueblack);
+                }
+                else{
+                    mainTrainPannel.setBackgroundResource(R.drawable.yellowblack);
+                }
             }
         });
 
@@ -144,6 +152,13 @@ public class TrainActivity extends AppCompatActivity implements AdapterView.OnIt
                 MainActivity.trainIndex ++;
                 MainActivity.isCurrentCardLanguage1 = MainActivity.isGuessModeLanguage1;
                 displayWord();
+
+                if(MainActivity.isGuessModeLanguage1){
+                    mainTrainPannel.setBackgroundResource(R.drawable.blueblack);
+                }
+                else{
+                    mainTrainPannel.setBackgroundResource(R.drawable.yellowblack);
+                }
             }
         });
 
@@ -287,7 +302,7 @@ public class TrainActivity extends AppCompatActivity implements AdapterView.OnIt
     @Override
     protected void onResume() {
         super.onResume();
-        if(MainActivity.currentProjectName.isEmpty()){
+        if(MainActivity.currentProjectName == null){
             Toast.makeText(getApplicationContext(), "Reset Security", Toast.LENGTH_LONG).show();
             Intent intent = new Intent(getApplicationContext(), MainActivity.class);
             intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);

@@ -1,4 +1,4 @@
-package com.example.myapplication;
+package com.DiXcipuli.DiXcio;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -18,7 +18,7 @@ public class WordDefinitionActivity extends AppCompatActivity {
     ImageButton bookmarkButton;
     private String articleWord1, articleWord2, word1StoredAt, word2StoredAt;
     EditText word1, word2;
-    boolean modifyMode;
+    boolean modifyMode, modifiedFromBrowser;
     String previousWord1, previousWord2;
     Integer bookmarked;
     TextView wordInfo;
@@ -27,7 +27,7 @@ public class WordDefinitionActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        if(MainActivity.currentProjectName.isEmpty()){
+        if(MainActivity.currentProjectName == null){
             Toast.makeText(getApplicationContext(), "Reset Security", Toast.LENGTH_LONG).show();
             Intent intent = new Intent(getApplicationContext(), MainActivity.class);
             intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
@@ -59,6 +59,8 @@ public class WordDefinitionActivity extends AppCompatActivity {
             wordItem = (WordItem) b.getSerializable("word");
             word1.setText(wordItem.getWordLanguage1());
             word2.setText(wordItem.getWordLanguage2());
+
+            modifiedFromBrowser = b.getBoolean("modifiedFromBrowser");
 
             previousWord1 = wordItem.getWordLanguage1();
             previousWord2 = wordItem.getWordLanguage2();
@@ -164,9 +166,21 @@ public class WordDefinitionActivity extends AppCompatActivity {
                                     wordItem.getDate(),
                                     bookmarked);
 
-                            MainActivity.wordTrainList.get(MainActivity.trainIndex).setWordLanguage1(word1String);
-                            MainActivity.wordTrainList.get(MainActivity.trainIndex).setWordLanguage2(word2String);
-                            MainActivity.wordTrainList.get(MainActivity.trainIndex).setBookmarked(bookmarked);
+                            if(modifiedFromBrowser){
+                                //Refresh TrainDatabase list.
+                                //Set static MainActivity values to default.
+                                MainActivity.isCurrentCardLanguage1 = true;
+                                MainActivity.isGuessModeLanguage1 = true;
+                                MainActivity.trainIndex = 0;
+                                MainActivity.modeSpinnerIndex = 0;
+                                MainActivity.numberSpinnerIndex = 0;
+                                MainActivity.wordTrainList =  MainActivity.dataBase.getWords(2, null, null);
+                            }
+                            else{
+                                MainActivity.wordTrainList.get(MainActivity.trainIndex).setWordLanguage1(word1String);
+                                MainActivity.wordTrainList.get(MainActivity.trainIndex).setWordLanguage2(word2String);
+                                MainActivity.wordTrainList.get(MainActivity.trainIndex).setBookmarked(bookmarked);
+                            }
 
                             boolean success = db.replaceWord(word, previousWord1, previousWord2);
                             Toast.makeText(getApplicationContext(), "Definition modified!", Toast.LENGTH_LONG).show();

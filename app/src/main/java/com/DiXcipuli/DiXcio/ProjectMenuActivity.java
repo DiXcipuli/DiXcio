@@ -1,4 +1,4 @@
-package com.example.myapplication;
+package com.DiXcipuli.DiXcio;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -23,7 +23,7 @@ public class ProjectMenuActivity extends AppCompatActivity implements DeleteDial
     @Override
     protected void onResume() {
         super.onResume();
-        if(MainActivity.currentProjectName.isEmpty()){
+        if(MainActivity.currentProjectName == null){
             Toast.makeText(getApplicationContext(), "Reset Security", Toast.LENGTH_LONG).show();
             Intent intent = new Intent(getApplicationContext(), MainActivity.class);
             intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
@@ -126,8 +126,9 @@ public class ProjectMenuActivity extends AppCompatActivity implements DeleteDial
         }
 
         File root = Environment.getExternalStorageDirectory();
-        File dir = new File(root.getAbsolutePath() + File.separator + R.string.app_name);
-        File file = new File(dir + File.separator + R.string.app_name + ".txt");
+        //File dir = new File(root.getAbsolutePath() + File.separator + R.string.app_name);
+        File dir = new File(getApplicationInfo().dataDir);
+        File file = new File(dir + File.separator + "DiXcioProjects.txt");
         file.delete();
 
         String message = "";

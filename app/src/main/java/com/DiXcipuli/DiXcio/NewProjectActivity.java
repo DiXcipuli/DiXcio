@@ -1,4 +1,4 @@
-package com.example.myapplication;
+package com.DiXcipuli.DiXcio;
 
 import android.content.Intent;
 import android.graphics.Color;
@@ -80,13 +80,14 @@ public class NewProjectActivity extends AppCompatActivity {
 
             if (Environment.MEDIA_MOUNTED.equals(state)) {
                 File root = Environment.getExternalStorageDirectory();
-                File dir = new File(root.getAbsolutePath() + File.separator + R.string.app_name);
+                //File dir = new File(root.getAbsolutePath() + File.separator + R.string.app_name);
+                File dir = new File(getApplicationInfo().dataDir);
 
                 if (!dir.exists()) {
                     dir.mkdirs();
                 }
 
-                File file = new File(dir + File.separator + R.string.app_name + ".txt");
+                File file = new File(dir + File.separator + "DiXcioProjects.txt");
                 String message = newProjectName.getText().toString() + "," + language1.getText().toString() + "," + language2.getText().toString() + "\n";
 
                 ProjectItem pi = new ProjectItem(newProjectName.getText().toString(), language1.getText().toString(), language2.getText().toString());

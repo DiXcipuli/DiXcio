@@ -1,4 +1,4 @@
-package com.example.myapplication;
+package com.DiXcipuli.DiXcio;
 
 import android.content.ContentValues;
 import android.content.Context;
@@ -29,7 +29,6 @@ public class DataBase extends SQLiteOpenHelper {
     public static String COLUMN_DATE = "DATE";
     public static String COLUMN_BOOKMARKED = "BOOKMARKED";
 
-
     public DataBase(@Nullable Context context, String name) {
         super(context, name, null, 1);
         DATABASE_NAME = name;
@@ -58,7 +57,6 @@ public class DataBase extends SQLiteOpenHelper {
     public boolean replaceWord(WordItem wi, String pv1, String pv2){
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues cv = new ContentValues();
-        boolean dateOk = true;
 
         Date date = null;
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
@@ -68,7 +66,6 @@ public class DataBase extends SQLiteOpenHelper {
         } catch (ParseException e) {
             e.printStackTrace();
             date = new Date();
-            dateOk = false;
         }
 
         cv.put(COLUMN_WORD_1, wi.getWordLanguage1());
@@ -81,9 +78,13 @@ public class DataBase extends SQLiteOpenHelper {
         cv.put(COLUMN_BOOKMARKED, wi.getBookmarked());
 
         long insert = db.update(DATABASE_NAME,cv,COLUMN_WORD_1 + " = ? AND " + COLUMN_WORD_2 + " = ?",new String[]{pv1, pv2});
-        //long insert =  db.insert(DATABASE_NAME, null, cv);
 
-        return dateOk;
+        if(insert == -1){
+            return false;
+        }
+        else{
+            return true;
+        }
     }
 
     public boolean addOne(WordItem wi){
@@ -104,16 +105,16 @@ public class DataBase extends SQLiteOpenHelper {
 
         long insert =  db.insert(DATABASE_NAME, null, cv);
 
-        if(insert < 0 )
-            return true;
-        else{
+        if(insert == -1 )
             return false;
+        else{
+            return true;
         }
     }
 
     public void deleteWord(String pw1, String pw2){
         SQLiteDatabase db = this.getWritableDatabase();
-        db.delete(DATABASE_NAME, COLUMN_WORD_1 + " = ? AND " + COLUMN_WORD_2 + " = ?",new String[]{pw1, pw2});
+        final int delete = db.delete(DATABASE_NAME, COLUMN_WORD_1 + " = ? AND " + COLUMN_WORD_2 + " = ?", new String[]{pw1, pw2});
     }
 
     public List<WordItem> getWords(Integer mode, Integer limit, String pattern){

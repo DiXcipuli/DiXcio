@@ -1,4 +1,4 @@
-package com.example.myapplication;
+package com.DiXcipuli.DiXcio;
 
 public class ProjectItem{
     private String projectName, language1, language2;
