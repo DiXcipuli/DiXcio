@@ -43,7 +43,6 @@ public class NewProjectActivity extends AppCompatActivity {
                 else {
                     saveProject(v);
                     createDatabase();
-
                 }
             }
         });
@@ -79,15 +78,13 @@ public class NewProjectActivity extends AppCompatActivity {
         else if(!getApplicationContext().getDatabasePath(newProjectName.getText().toString()).exists()) {
 
             if (Environment.MEDIA_MOUNTED.equals(state)) {
-                File root = Environment.getExternalStorageDirectory();
-                //File dir = new File(root.getAbsolutePath() + File.separator + R.string.app_name);
-                File dir = new File(getApplicationInfo().dataDir);
+                File dir = new File(getApplicationInfo().dataDir); // Internal storage, not accessible from outside the app: /data/user/0 ...
 
                 if (!dir.exists()) {
                     dir.mkdirs();
                 }
 
-                File file = new File(dir + File.separator + "DiXcioProjects.txt");
+                File file = new File(dir + File.separator + MainActivity.projectsInfoFile);
                 String message = newProjectName.getText().toString() + "," + language1.getText().toString() + "," + language2.getText().toString() + "\n";
 
                 ProjectItem pi = new ProjectItem(newProjectName.getText().toString(), language1.getText().toString(), language2.getText().toString());

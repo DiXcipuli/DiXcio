@@ -126,32 +126,32 @@ public class DataBase extends SQLiteOpenHelper {
                 queryString = "SELECT * FROM " + DATABASE_NAME;
                 break;
 
-            //random All words
+            //Random order, through all words
             case 2:
                 queryString = "SELECT * FROM " + DATABASE_NAME + " ORDER BY RANDOM()";
                 break;
 
-            //Ascendente order alphabet Language 1
+            //Alphabetical order according to Language 1
             case 3:
                 queryString = "SELECT * FROM " + DATABASE_NAME + " ORDER BY " + COLUMN_WORD_1 + " COLLATE UNICODE ASC";
                 break;
 
-            //DESCendente order alphabet Language 1
+            //Reverse alphabetical order according to Language 1
             case 4:
                 queryString = "SELECT * FROM " + DATABASE_NAME + " ORDER BY " + COLUMN_WORD_1 + " COLLATE UNICODE DESC";
                 break;
 
-            //Ascendente order alphabet Language 2
+            //Alphabetical order according to Language 2
             case 5:
                 queryString = "SELECT * FROM " + DATABASE_NAME + " ORDER BY " + COLUMN_WORD_2 + " COLLATE UNICODE ASC";
                 break;
 
-            //DESCendente order alphabet Language 2
+            //Reverse alphabetical order according to Language 2
             case 6:
                 queryString = "SELECT * FROM " + DATABASE_NAME + " ORDER BY " + COLUMN_WORD_2 + " COLLATE UNICODE DESC";
                 break;
 
-            //Random bookmark
+            //Random order through all bookmarked words
             case 7:
                 queryString = "SELECT * FROM " + DATABASE_NAME + " WHERE " + COLUMN_BOOKMARKED + " = 1 ORDER BY RANDOM() LIMIT " + Integer.toString(limit);
                 break;
@@ -161,12 +161,12 @@ public class DataBase extends SQLiteOpenHelper {
                 queryString = "SELECT * FROM " + DATABASE_NAME + " ORDER BY " + COLUMN_DATE + " DESC LIMIT " + Integer.toString(limit);
                 break;
 
-            // Search in Language 1 and 2 for pattern (Browser mode) and order in language1
+            // Search in Language 1 and 2 for pattern (Browser mode) and in alphabetical order according to language1
             case 9:
                 queryString = "SELECT * FROM " + DATABASE_NAME + " WHERE " + COLUMN_WORD_1 + " LIKE " + "'%" + pattern + "%'" + " OR " + COLUMN_WORD_2 + " LIKE "  + "'%" + pattern + "%'" + " ORDER BY " + COLUMN_WORD_1 + " COLLATE UNICODE ASC";
                 break;
 
-            // Search in Language 1 and 2 for pattern (Browser mode) and order in language2
+            // Search in Language 1 and 2 for pattern (Browser mode) and in alphabetical order according to language2
             case 10:
                 queryString = "SELECT * FROM " + DATABASE_NAME + " WHERE " + COLUMN_WORD_2 + " LIKE " + pattern  + " ORDER BY " + COLUMN_WORD_2 + " COLLATE UNICODE ASC";
                 break;
@@ -176,7 +176,7 @@ public class DataBase extends SQLiteOpenHelper {
                 queryString = "SELECT * FROM " + DATABASE_NAME + " ORDER BY " + COLUMN_PERCENTAGE + " ASC LIMIT " + limit + " COLLATE UNICODE";
                 break;
 
-            // Less met
+            // Less encountered
             case 12:
                 queryString = "SELECT * FROM " + DATABASE_NAME + " ORDER BY " + COLUMN_COUNT + " ASC LIMIT " + limit + " COLLATE UNICODE";
                 break;
@@ -190,12 +190,8 @@ public class DataBase extends SQLiteOpenHelper {
             //loop through the results:
             do{
                 Integer wordID = cursor.getInt(0);
-//                String articleWord1 = cursor.getString(1);
                 String word1 = cursor.getString(1);
-//                String word1StoredAt = cursor.getString(3);
-//                String articleWord2 = cursor.getString(4);
                 String word2 = cursor.getString(2);
-//                String word2StoredAt = cursor.getString(6);
                 Integer count = cursor.getInt(3);
                 Integer success = cursor.getInt(4);
                 Float percentage = cursor.getFloat(5);

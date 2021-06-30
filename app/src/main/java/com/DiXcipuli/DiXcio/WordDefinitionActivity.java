@@ -12,16 +12,20 @@ import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+//Activity loaded to allow the user to enter a new word in the Database
 public class WordDefinitionActivity extends AppCompatActivity {
+    //This Activity can be opened under two different situations:
+    //  - When entering a new word
+    //  - When modifying an existing word
 
     Button saveWordButton, deleteWordButton;
     ImageButton bookmarkButton;
-    private String articleWord1, articleWord2, word1StoredAt, word2StoredAt;
     EditText word1, word2;
-    boolean modifyMode, modifiedFromBrowser;
-    String previousWord1, previousWord2;
-    Integer bookmarked;
-    TextView wordInfo;
+    boolean modifyMode;    // Used to dispaly the 'deleteWordButton' or not.
+    boolean modifiedFromBrowser;    // The behavior is different if comming from the training mode. If it is the case, the word have to be refresh as they might have been modified
+    String previousWord1, previousWord2;    // Used to replace the right words in the database
+    Integer bookmarked; // Integer acting as a boolean, but more convinient for the database
+    TextView wordInfo;  //Success % ...
     WordItem wordItem;
 
     @Override
@@ -52,6 +56,7 @@ public class WordDefinitionActivity extends AppCompatActivity {
         word1.setHint(MainActivity.currentLanguage1);
         word2.setHint(MainActivity.currentLanguage2);
 
+        // Getting parameters from the previous Activity
         Bundle b = getIntent().getExtras();
         modifyMode = b.getBoolean("modifyMode");
 
@@ -73,7 +78,7 @@ public class WordDefinitionActivity extends AppCompatActivity {
                 bookmarked = 1;
             }
         }
-        else{
+        else{ // No need to display those 2 if we just want to add a new word
             deleteWordButton.setVisibility(View.GONE);
             wordInfo.setVisibility(View.GONE);
         }

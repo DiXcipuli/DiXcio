@@ -1,9 +1,11 @@
 package com.DiXcipuli.DiXcio;
 
 import android.Manifest;
+import android.app.Application;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
+import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
@@ -27,6 +29,9 @@ import java.util.List;
 import java.util.Vector;
 
 public class MainActivity extends AppCompatActivity {
+    // Here are variables whoch will be also used by other Activities
+    public static String appFolderName =  "DiXcio"; //Used to save the catlogs and the exported csv -> storage/emulated/0/DiXcio
+    public static String projectsInfoFile = "DiXcioProjects.txt";
     public static LinearLayout layout;
     public static String currentProjectName, currentLanguage1, currentLanguage2;
     public static Vector<ProjectItem>  projectList= new Vector<ProjectItem>();
@@ -50,6 +55,9 @@ public class MainActivity extends AppCompatActivity {
     public static boolean browseLanguage1 = true;
     public static boolean browseAlphabetical = true;
 
+    public static int backgroundLanguage1 = R.drawable.blueblack;
+    public static int backgroundLanguage2 = R.drawable.yellowblack;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -61,15 +69,18 @@ public class MainActivity extends AppCompatActivity {
         newProjectButton.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
-                openSecondActivity();
+                newProjectActivity();
             }
         });
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            // WRITE PERMISSION also gives READ PERMISSION
             if (checkSelfPermission(android.Manifest.permission.WRITE_EXTERNAL_STORAGE)
                     != PackageManager.PERMISSION_GRANTED) {
-
                 ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, 1);
+            }
+            else{
+                generateCatLog();
             }
         }
 
@@ -81,25 +92,50 @@ public class MainActivity extends AppCompatActivity {
 
         //super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         if(grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+            generateCatLog();
         }
         else{
-            Toast.makeText(getApplicationContext(), "Definition modified!", Toast.LENGTH_LONG).show();
-
+            // Quit the app
             this.finish();
             System.exit(0);
         }
     }
 
-    public void openSecondActivity(){
+    public void generateCatLog(){
+        // Environment.getExternalStorageDirectory() returns /storage/emulated/0 , which is the folder where Documents, Downloads... are.
+        File appDirectory = new File( Environment.getExternalStorageDirectory() +  File.separator + appFolderName );
+        File logDirectory = new File( appDirectory +  File.separator + "logs" );
+        File logFile = new File( logDirectory, "logcat_" + System.currentTimeMillis() + ".txt" );
+
+        // create app folder
+        if ( !appDirectory.exists() ) {
+            appDirectory.mkdir();
+        }
+
+        // create log folder
+        if ( !logDirectory.exists() ) {
+            logDirectory.mkdir();
+        }
+
+        // clear the previous logcat and then write the new one to the file
+        try {
+            Process process = Runtime.getRuntime().exec("logcat -c");
+            process = Runtime.getRuntime().exec("logcat -f " + logFile);
+        } catch ( IOException e ) {
+            e.printStackTrace();
+        }
+    }
+
+    public void newProjectActivity(){
         Intent intent = new Intent(this, NewProjectActivity.class);
         startActivity(intent);
     }
 
+    // Loading all the project stored under /data/user/0/com.app.name
+    // This path is not accessible from the device explorer though
     public void loadProject() {
-        File root = Environment.getExternalStorageDirectory();
-        //File dir = new File(root.getAbsolutePath() + File.separator +  R.string.app_name);
-        File dir = new File(getApplicationInfo().dataDir);
-        File file = new File(dir + File.separator +  "DiXcioProjects.txt");
+        File dir = new File(getApplicationInfo().dataDir);      // Returns /data/user/0/com.app.name
+        File file = new File(dir + File.separator +  projectsInfoFile);
 
         String message;
         try {
@@ -107,20 +143,22 @@ public class MainActivity extends AppCompatActivity {
             InputStreamReader isr = new InputStreamReader(fis);
             BufferedReader br = new BufferedReader(isr);
             StringBuffer sb = new StringBuffer();
-            projectList.clear();
 
+            // Clear the project list, and delete each "Button Project"
+            projectList.clear();
             for(int i = 1; i < layout.getChildCount(); i++){
                 layout.removeViewAt(i);
             }
 
             while((message = br.readLine()) != null){
-                //sb.append(message + "\n");
-
+                // Each line in the text file contains: title, language1, language2
                 String[] splittedMessage = message.split(",");
+
+                //A ProjectItem contains a Title, and Language1 and a Language2 fields
                 ProjectItem pi = new ProjectItem(splittedMessage[0], splittedMessage[1], splittedMessage[2]);
                 MainActivity.projectList.add(pi);
 
-                //set the properties for button
+                // Create a new button to access the loaded project
                 Button newCreatedProject = new Button(this);
                 newCreatedProject.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.FILL_PARENT, LinearLayout.LayoutParams.FILL_PARENT));
                 newCreatedProject.setText(splittedMessage[0]);
@@ -131,8 +169,8 @@ public class MainActivity extends AppCompatActivity {
                         LinearLayout.LayoutParams.FILL_PARENT, LinearLayout.LayoutParams.FILL_PARENT);
                 params.setMargins(0, 8, 0, 0);
                 newCreatedProject.setLayoutParams(params);
-                //newCreatedProject.setId(R.id.project1Button);
 
+                // When clicked, Open the corresponding project menu, and update the vars, like currentProjectName
                 newCreatedProject.setOnClickListener(new OnClickListener() {
                     @Override
                     public void onClick(View v) {

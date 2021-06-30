@@ -23,7 +23,7 @@ public class ImportCsvActivity extends AppCompatActivity {
     Button importCsvButton;
     private Integer formatSize = 2;
 
-    @Override
+   /* @Override
     protected void onResume() {
         super.onResume();
         if(MainActivity.currentProjectName == null){
@@ -33,6 +33,7 @@ public class ImportCsvActivity extends AppCompatActivity {
             startActivity(intent);
         }
     }
+    */
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -63,23 +64,19 @@ public class ImportCsvActivity extends AppCompatActivity {
                 // then actually do something in another module
             }
         });
-// Set up and filter my extension I am looking for
+        // Extension I am looking for
         fileChooser.setExtension("csv");
         fileChooser.showDialog();
     }
 
     private void parseCsv(String path){
-        //String downloadFolder = getExternalFilesDir(Environment.DIRECTORY_DOWNLOADS).getAbsolutePath();
-        //Toast.makeText(getApplicationContext(), downloadFolder, Toast.LENGTH_LONG).show();
         FileReader file = null;
         FileReader file2 = null;
         try {
-            //Try to find the file, otherwise, throw an error: file not found.
-            //file = new FileReader(downloadFolder + File.separator + "DiXcio.csv");
             file = new FileReader(path);
             BufferedReader br = new BufferedReader(file);
 
-            //Then we first check that the format is respected for every line, and that no comma has been ommited
+            //Then we first check that the format is respected for every line, and that no comma has been omitted
             String currentLine;
             boolean isFormatRespected = true;
             Integer lineIndex = 0;
@@ -99,8 +96,7 @@ public class ImportCsvActivity extends AppCompatActivity {
 
             br.close();
 
-            if(isFormatRespected){
-                String line = "";
+            if(isFormatRespected){ //We will load the csv only if the previous check was fine, and the format respected
                 String tableName = MainActivity.currentProjectName;
                 String columns = DataBase.COLUMN_WORD_1 + ", " +
                         DataBase.COLUMN_WORD_2 + ", " +
@@ -117,12 +113,12 @@ public class ImportCsvActivity extends AppCompatActivity {
 
                 try {
                     //Try to find the file, otherwise, throw an error: file not found.
-                    //file2 = new FileReader(downloadFolder + File.separator + "DiXcio.csv");
                     file2 = new FileReader(path);
                 } catch (FileNotFoundException e) {
                     e.printStackTrace();
                 }
                 BufferedReader br2 = new BufferedReader(file2);
+                String line = "";
                 while(true){
                     try {
                         if (!((line = br2.readLine()) != null)) break;
@@ -134,11 +130,11 @@ public class ImportCsvActivity extends AppCompatActivity {
                     String[] str = line.split(";");
 
                     for(int i = 0; i < str.length; i++){
-                        if(str[i].contains("'")){
+                        if(str[i].contains("'")){ // Need some char replacement, which may cause conflict in the database
                             str[i] = str[i].replace("'","''");
                         }
 
-                        while(str[i].length() != 0){
+                        while(str[i].length() != 0){ // We remove the useless spaces
                             if(Character.toString(str[i].charAt(0)).equals(" "))
                                 str[i] = str[i].substring(1);
                             else{

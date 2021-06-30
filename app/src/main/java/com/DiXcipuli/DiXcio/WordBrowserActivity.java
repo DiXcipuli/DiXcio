@@ -25,6 +25,7 @@ public class WordBrowserActivity extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
+        // The position of the scroll browser is stored, then, when coming back, we have the same display, at the same scroll position
         MainActivity.browseScrollIndex = wordListView.getFirstVisiblePosition();
         View v =  wordListView.getChildAt(0);
         MainActivity.browserScrollTop = (v == null) ? 0 : (v.getTop() - wordListView.getPaddingTop());
@@ -46,11 +47,12 @@ public class WordBrowserActivity extends AppCompatActivity {
         word1Button.setText(MainActivity.currentLanguage1);
         word2Button.setText(MainActivity.currentLanguage2);
 
+        //Search bar
         search.addTextChangedListener(new TextWatcher() {
             @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-
-            }
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
+            @Override
+            public void afterTextChanged(Editable s) {}
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) { ;
@@ -80,13 +82,9 @@ public class WordBrowserActivity extends AppCompatActivity {
                     }
                 }
             }
-
-            @Override
-            public void afterTextChanged(Editable s) {
-
-            }
         });
 
+        // Allow the user to browser words accordingly to the language 1 or 2
         word1Button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -110,6 +108,7 @@ public class WordBrowserActivity extends AppCompatActivity {
             }
         });
 
+        // Allow the user to browser words accordingly to the language 1 or 2
         word2Button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -147,13 +146,10 @@ public class WordBrowserActivity extends AppCompatActivity {
                 startActivity(intent);
             }
         });
-
-        //updateBrowser(2);
     }
 
     public void updateBrowser(Integer mode){
         MainActivity.wordBrowseList = MainActivity.dataBase.getWords(mode, null, null);
-
         BrowserAdapter wordArrayAdapter = new BrowserAdapter(this,0, MainActivity.wordBrowseList);
         wordListView.setAdapter(wordArrayAdapter);
         wordNumber.setText(Integer.toString(MainActivity.wordBrowseList.size()) + " words");
@@ -200,7 +196,5 @@ public class WordBrowserActivity extends AppCompatActivity {
             MainActivity.wordHasBeenDeleted = false;
 
         }
-
-
     }
 }
