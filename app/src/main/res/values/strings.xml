@@ -1,0 +1,61 @@
+<resources>
+    <string name="app_name">DiXcio</string>
+    <string name="quit_app">Quit App</string>
+    <string name="quit">Quit</string>
+    <string name="menu">Menu</string>
+    <string name="new_project">New project</string>
+    <string name="set_project_name">Project Name</string>
+    <string name="set_language_1">Language 1</string>
+    <string name="set_language_2">Language 2</string>
+    <string name="deleteProjects">Delete Project</string>
+    <string name="addWords">Add Words</string>
+    <string name="browse">Browse</string>
+    <string name="train">Train</string>
+    <string name="importCSV">Import CSV</string>
+    <string name="exportCSV">Export CSV</string>
+    <string name="save">Save</string>
+    <string name="saveWord">Save Word</string>
+    <string name="back">Back</string>
+    <string name="word1">Word 1</string>
+    <string name="word2">Word 2</string>
+    <string name="wordBrowser">Word Browser</string>
+    <string name="wordDefinition">Word Definition</string>
+    <string name="guess">Guess?</string>
+    <string name="deleteWord">Delete Word</string>
+    <string name="dixcipuli">Visit DiXcipuli.com</string>
+    <string name="articles">articles</string>
+    <string name="words">words</string>
+    <string name="storedat">stored at</string>
+    <string name="search">Search</string>
+    <string name="modify">modify</string>
+
+    <string name="csvText">To be tracked, your csv file must be named words.csv and be put in the public Download folder of your phone</string>
+    <string name="cvsExportText">A csv file will be created containing all the words stored for this project. This file is located at Storage/Documents/DiXcio/${your_project_name}.csv</string>
+
+    <string-array name="numbers">
+        <item>20</item>
+        <item>50</item>
+        <item>100</item>
+        <item>200</item>
+        <item>500</item>
+    </string-array>
+
+    <string-array name="browsingOrder">
+        <item>Random order - All words</item>
+        <item>Last added</item>
+        <item>Most failed</item>
+        <item>Bookmark</item>
+        <item>Less met</item>
+    </string-array>
+
+    <string-array name="bullshit">
+        <item>One moment please, we are selling your datas to Google</item>
+        <item>Establishing connection with the Pentagon</item>
+        <item>Uninstalling all applications</item>
+        <item>Downloading 13Gb of words, one moment please</item>
+        <item>Scanning your passwords</item>
+        <item>Getting your bank credentials, please hold</item>
+        <item>Breaking the firewall, it may take a while</item>
+
+    </string-array>
+</resources>
