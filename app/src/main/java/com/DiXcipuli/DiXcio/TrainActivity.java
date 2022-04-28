@@ -28,6 +28,14 @@ public class TrainActivity extends AppCompatActivity implements AdapterView.OnIt
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        if(MainActivity.currentProjectName == null){
+            Toast.makeText(getApplicationContext(), "Reset Security", Toast.LENGTH_LONG).show();
+            Intent intent = new Intent(getApplicationContext(), MainActivity.class);
+            startActivity(intent);
+            finish();
+        }
+
         setContentView(R.layout.activity_train);
 
         //Define components
@@ -267,7 +275,7 @@ public class TrainActivity extends AppCompatActivity implements AdapterView.OnIt
 
         if(MainActivity.trainIndex >= MainActivity.wordTrainList.size() || MainActivity.trainIndex == -1){
             wordProgression.setText("0 / " + Integer.toString(MainActivity.wordTrainList.size()) + " words");
-            mainTrainPannel.setText("No more datas!");
+            mainTrainPannel.setText("No more data!");
             bookmarkButton.setImageResource(R.drawable.bookmark);
             MainActivity.trainIndex = -1;
         }

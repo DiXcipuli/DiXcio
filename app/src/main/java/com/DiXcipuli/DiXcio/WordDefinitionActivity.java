@@ -28,20 +28,17 @@ public class WordDefinitionActivity extends AppCompatActivity {
     TextView wordInfo;  //Success % ...
     WordItem wordItem;
 
-    @Override
-    protected void onResume() {
-        super.onResume();
-        if(MainActivity.currentProjectName == null){
-            Toast.makeText(getApplicationContext(), "Reset Security", Toast.LENGTH_LONG).show();
-            Intent intent = new Intent(getApplicationContext(), MainActivity.class);
-            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-            startActivity(intent);
-        }
-    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        if(MainActivity.currentProjectName == null){
+            Toast.makeText(getApplicationContext(), "Reset Security", Toast.LENGTH_LONG).show();
+            Intent intent = new Intent(getApplicationContext(), MainActivity.class);
+            startActivity(intent);
+            finish();
+        }
 
         bookmarked = 0;
 
@@ -97,7 +94,7 @@ public class WordDefinitionActivity extends AppCompatActivity {
                 MainActivity.isGuessModeLanguage1 = true;
                 MainActivity.trainIndex = 0;
                 MainActivity.modeSpinnerIndex = 0;
-                MainActivity.numberSpinnerIndex = 0;
+                MainActivity.numberSpinnerIndex = 2;
                 MainActivity.wordTrainList =  MainActivity.dataBase.getWords(2, null, null);
 
                 finish();
@@ -206,6 +203,18 @@ public class WordDefinitionActivity extends AppCompatActivity {
                             word1.setText("");
                             word2.setText("");
                             bookmarkButton.setImageResource(R.drawable.bookmark);
+
+                            if(MainActivity.wordTrainList.size() < 100){
+                                //Refresh TrainDatabase list.
+                                //Set static MainActivity values to default.
+                                MainActivity.isCurrentCardLanguage1 = true;
+                                MainActivity.isGuessModeLanguage1 = true;
+                                MainActivity.trainIndex = 0;
+                                MainActivity.modeSpinnerIndex = 0;
+                                MainActivity.numberSpinnerIndex = 2;
+                                MainActivity.wordTrainList =  MainActivity.dataBase.getWords(2, null, null);
+
+                            }
                         }
                         bookmarked = 0;
 

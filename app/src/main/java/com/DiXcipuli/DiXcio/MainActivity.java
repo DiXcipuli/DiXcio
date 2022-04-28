@@ -43,10 +43,10 @@ public class MainActivity extends AppCompatActivity {
     public static Integer trainIndex = 0;
 
     //static variable to set the train activity
-    public static boolean isGuessModeLanguage1;
-    public static boolean isCurrentCardLanguage1;
+    public static boolean isGuessModeLanguage1 = true;
+    public static boolean isCurrentCardLanguage1 = true;
     public static Integer modeSpinnerIndex = 0;
-    public static Integer numberSpinnerIndex = 0;
+    public static Integer numberSpinnerIndex = 2;
 
     //static variable to set the browse activity
     public static Integer browseScrollIndex = 0;

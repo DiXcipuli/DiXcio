@@ -13,6 +13,7 @@
     <string name="train">Train</string>
     <string name="importCSV">Import CSV</string>
     <string name="exportCSV">Export CSV</string>
+    <string name="notes">Notes</string>
     <string name="save">Save</string>
     <string name="saveWord">Save Word</string>
     <string name="back">Back</string>
@@ -42,20 +43,10 @@
 
     <string-array name="browsingOrder">
         <item>Random order - All words</item>
-        <item>Last added</item>
-        <item>Most failed</item>
-        <item>Bookmark</item>
-        <item>Less met</item>
+        <item>Lastly added</item>
+        <item>The less successful</item>
+        <item>Bookmarked</item>
+        <item>The less encountered</item>
     </string-array>
 
-    <string-array name="bullshit">
-        <item>One moment please, we are selling your datas to Google</item>
-        <item>Establishing connection with the Pentagon</item>
-        <item>Uninstalling all applications</item>
-        <item>Downloading 13Gb of words, one moment please</item>
-        <item>Scanning your passwords</item>
-        <item>Getting your bank credentials, please hold</item>
-        <item>Breaking the firewall, it may take a while</item>
-
-    </string-array>
 </resources>

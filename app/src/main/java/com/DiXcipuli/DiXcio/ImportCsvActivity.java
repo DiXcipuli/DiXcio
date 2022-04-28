@@ -23,17 +23,6 @@ public class ImportCsvActivity extends AppCompatActivity {
     Button importCsvButton;
     private Integer formatSize = 2;
 
-   /* @Override
-    protected void onResume() {
-        super.onResume();
-        if(MainActivity.currentProjectName == null){
-            Toast.makeText(getApplicationContext(), "Reset Security", Toast.LENGTH_LONG).show();
-            Intent intent = new Intent(getApplicationContext(), MainActivity.class);
-            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-            startActivity(intent);
-        }
-    }
-    */
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

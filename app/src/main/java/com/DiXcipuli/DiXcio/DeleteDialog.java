@@ -18,7 +18,7 @@ public class DeleteDialog extends AppCompatDialogFragment {
     public Dialog onCreateDialog(@Nullable Bundle savedInstanceState) {
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
         builder.setTitle("Warning!");
-        builder.setMessage("Are you sure you want to delete this project? All datas contained in the database will be deleted");
+        builder.setMessage("Are you sure you want to delete this project? All data stored in the database will be deleted");
         builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {

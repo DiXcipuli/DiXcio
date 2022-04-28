@@ -1,8 +1,10 @@
 package com.DiXcipuli.DiXcio;
 
 import android.content.Intent;
+import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.os.Environment;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
@@ -10,44 +12,34 @@ import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
+import java.io.FileReader;
 import java.io.IOException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 public class ProjectMenuActivity extends AppCompatActivity implements DeleteDialog.DeleteDialogListener{
 
     Button addWordsButton, browseWordsButton, trainButton, importCsvButton, exportCsvButton, deleteProjectButton;
     TextView subTitleProjectName;
 
-    @Override
-    protected void onResume() {
-        super.onResume();
-        if(MainActivity.currentProjectName == null){
-            Toast.makeText(getApplicationContext(), "Reset Security", Toast.LENGTH_LONG).show();
-            Intent intent = new Intent(getApplicationContext(), MainActivity.class);
-            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-            startActivity(intent);
-        }
-    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        if(MainActivity.currentProjectName == null){
+            Toast.makeText(getApplicationContext(), "Reset Security", Toast.LENGTH_LONG).show();
+            Intent intent = new Intent(getApplicationContext(), MainActivity.class);
+            startActivity(intent);
+            finish();
+        }
+
         setContentView(R.layout.activity_project_menu);
 
-        //Set static MainActivity values to default.
-        MainActivity.isCurrentCardLanguage1 = true;
-        MainActivity.isGuessModeLanguage1 = true;
-        MainActivity.wordHasBeenDeleted = false;
-        MainActivity.trainIndex = 0;
-        MainActivity.modeSpinnerIndex = 0;
-        MainActivity.numberSpinnerIndex = 0;
-        MainActivity.browseScrollIndex = 0;
-        MainActivity.browserScrollTop = 0;
-        MainActivity.browseSearch = "";
-        MainActivity.browseLanguage1 = true;
-        MainActivity.browseAlphabetical = true;
         MainActivity.dataBase = new DataBase(ProjectMenuActivity.this,  MainActivity.currentProjectName);
         MainActivity.wordTrainList =  MainActivity.dataBase.getWords(2, null, null);
         MainActivity.wordBrowseList =  MainActivity.dataBase.getWords(3, null, null);
@@ -71,8 +63,7 @@ public class ProjectMenuActivity extends AppCompatActivity implements DeleteDial
         importCsvButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(getApplicationContext(), ImportCsvActivity.class);
-                startActivity(intent);
+                processFile();
             }
         });
 
@@ -166,5 +157,139 @@ public class ProjectMenuActivity extends AppCompatActivity implements DeleteDial
     public void loadWords(){
         Intent intent = new Intent(this, WordBrowserActivity.class);
         startActivity(intent);
+    }
+
+    private void processFile(){
+        FileChooser fileChooser = new FileChooser(ProjectMenuActivity.this);
+
+        fileChooser.setFileListener(new FileChooser.FileSelectedListener() {
+            @Override
+            public void fileSelected(final File file) {
+                // ....do something with the file
+                String filename = file.getAbsolutePath();
+                Log.i("File Name", filename);
+                if(file.exists()) {
+                    parseCsv(filename);
+                }
+                // then actually do something in another module
+            }
+        });
+        // Extension I am looking for
+        fileChooser.setExtension("csv");
+        fileChooser.showDialog();
+    }
+
+    private void parseCsv(String path){
+        FileReader file = null;
+        FileReader file2 = null;
+        Integer formatSize = 2;
+        try {
+            file = new FileReader(path);
+            BufferedReader br = new BufferedReader(file);
+
+            //Then we first check that the format is respected for every line, and that no comma has been omitted
+            String currentLine;
+            boolean isFormatRespected = true;
+            Integer lineIndex = 0;
+            while(true) {
+                try {
+                    if (!((currentLine = br.readLine()) != null)) break;
+                    String[] currentStr = currentLine.split(";");
+                    if(currentStr.length != formatSize){
+                        isFormatRespected = false;
+                        break;
+                    }
+                    lineIndex++;
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+
+            br.close();
+
+            if(isFormatRespected){ //We will load the csv only if the previous check was fine, and the format respected
+                String tableName = MainActivity.currentProjectName;
+                String columns = DataBase.COLUMN_WORD_1 + ", " +
+                        DataBase.COLUMN_WORD_2 + ", " +
+                        DataBase.COLUMN_COUNT + ", " +
+                        DataBase.COLUMN_SUCCESS + ", " +
+                        DataBase.COLUMN_PERCENTAGE + ", " +
+                        DataBase.COLUMN_CATEGORY + ", " +
+                        DataBase.COLUMN_DATE;
+                String str1 = "INSERT INTO " + tableName + " (" + columns + ") values('";
+                String str2 = ");";
+
+                SQLiteDatabase dataBase = new DataBase(getApplicationContext(), MainActivity.currentProjectName).getWritableDatabase();
+                dataBase.beginTransaction();
+
+                try {
+                    //Try to find the file, otherwise, throw an error: file not found.
+                    file2 = new FileReader(path);
+                } catch (FileNotFoundException e) {
+                    e.printStackTrace();
+                }
+                BufferedReader br2 = new BufferedReader(file2);
+                String line = "";
+                while(true){
+                    try {
+                        if (!((line = br2.readLine()) != null)) break;
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+
+                    StringBuilder sb = new StringBuilder(str1);
+                    String[] str = line.split(";");
+
+                    for(int i = 0; i < str.length; i++){
+                        if(str[i].contains("'")){ // Need some char replacement, which may cause conflict in the database
+                            str[i] = str[i].replace("'","''");
+                        }
+
+                        while(str[i].length() != 0){ // We remove the useless spaces
+                            if(Character.toString(str[i].charAt(0)).equals(" "))
+                                str[i] = str[i].substring(1);
+                            else{
+                                break;
+                            }
+                        }
+                    }
+
+                    SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+                    Date date = new Date();
+
+                    sb.append(str[0] + "', '");
+                    sb.append(str[1] + "', '");
+                    sb.append("0', '");
+                    sb.append("0', '");
+                    sb.append("0', '");
+                    sb.append("None', '");
+                    sb.append(dateFormat.format(date).toString() + "'");
+                    sb.append(str2);
+                    dataBase.execSQL(sb.toString());
+                }
+                dataBase.setTransactionSuccessful();
+                dataBase.endTransaction();
+                Toast.makeText(getApplicationContext(), Integer.toString(lineIndex) + " words have been added!", Toast.LENGTH_LONG).show();
+
+                //Refresh TrainDatabase list.
+                //Set static MainActivity values to default.
+                MainActivity.isCurrentCardLanguage1 = true;
+                MainActivity.isGuessModeLanguage1 = true;
+                MainActivity.trainIndex = 0;
+                MainActivity.modeSpinnerIndex = 0;
+                MainActivity.numberSpinnerIndex = 2;
+                MainActivity.wordTrainList =  MainActivity.dataBase.getWords(2, null, null);
+
+            }
+            else {
+                Toast.makeText(getApplicationContext(), "Format error at line: " + Integer.toString(lineIndex + 1), Toast.LENGTH_LONG).show();
+            }
+
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+            Toast.makeText(getApplicationContext(), "File not found", Toast.LENGTH_LONG).show();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 }
