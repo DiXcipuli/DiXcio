@@ -42,7 +42,7 @@ public class NewProjectActivity extends AppCompatActivity {
 
                 else {
                     saveProject(v);
-                    createDatabase();
+
                 }
             }
         });
@@ -62,7 +62,7 @@ public class NewProjectActivity extends AppCompatActivity {
         boolean databaseNameContainsSpace = false;
         String projectName = newProjectName.getText().toString();
         for(int i = 0; i < projectName.length(); i++){
-            if(Character.toString(projectName.charAt(i)).equals(" ")){
+            if(Character.toString(projectName.charAt(i)).equals(" ") || !Character.isLetter(projectName.charAt(i))){
                     databaseNameContainsSpace = true;
             }
         }
@@ -72,7 +72,7 @@ public class NewProjectActivity extends AppCompatActivity {
         }
 
         else if(databaseNameContainsSpace){
-            Toast.makeText(getApplicationContext(), "Project name can't have any space", Toast.LENGTH_LONG).show();
+            Toast.makeText(getApplicationContext(), "Project name can't have any spaces, digits or special characters", Toast.LENGTH_LONG).show();
         }
 
         else if(!getApplicationContext().getDatabasePath(newProjectName.getText().toString()).exists()) {
@@ -133,7 +133,10 @@ public class NewProjectActivity extends AppCompatActivity {
                     //add button to the layout
                     MainActivity.layout.addView(newCreatedProject);
 
+                    createDatabase();
+
                     Toast.makeText(getApplicationContext(), "Project Saved", Toast.LENGTH_LONG).show();
+
 
                     openProjectMenuActivity();
                 } catch (FileNotFoundException e) {
@@ -153,5 +156,6 @@ public class NewProjectActivity extends AppCompatActivity {
 
     public void createDatabase(){
         DataBase dataBase = new DataBase(NewProjectActivity.this, MainActivity.currentProjectName);
+        dataBase.setNotes();
     }
 }

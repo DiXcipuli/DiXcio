@@ -29,7 +29,6 @@ import java.util.List;
 import java.util.Vector;
 
 public class MainActivity extends AppCompatActivity {
-    // Here are variables whoch will be also used by other Activities
     public static String appFolderName =  "DiXcio"; //Used to save the catlogs and the exported csv -> storage/emulated/0/DiXcio
     public static String projectsInfoFile = "DiXcioProjects.txt";
     public static LinearLayout layout;
@@ -58,6 +57,20 @@ public class MainActivity extends AppCompatActivity {
     public static int backgroundLanguage1 = R.drawable.blueblack;
     public static int backgroundLanguage2 = R.drawable.yellowblack;
 
+
+    public static void resetToDefault(){
+        trainIndex = 0;
+        isGuessModeLanguage1 = true;
+        isCurrentCardLanguage1 = true;
+        modeSpinnerIndex = 0;
+        numberSpinnerIndex = 2;
+        browseScrollIndex = 0;
+        browserScrollTop = 0;
+        browseSearch = "";
+        browseLanguage1 = true;
+        browseAlphabetical = true;
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -80,7 +93,7 @@ public class MainActivity extends AppCompatActivity {
                 ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, 1);
             }
             else{
-                generateCatLog();
+                //generateCatLog();
             }
         }
 
@@ -92,7 +105,7 @@ public class MainActivity extends AppCompatActivity {
 
         //super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         if(grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-            generateCatLog();
+            //generateCatLog();
         }
         else{
             // Quit the app

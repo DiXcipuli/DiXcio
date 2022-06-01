@@ -23,7 +23,7 @@ import java.util.Date;
 
 public class ProjectMenuActivity extends AppCompatActivity implements DeleteDialog.DeleteDialogListener{
 
-    Button addWordsButton, browseWordsButton, trainButton, importCsvButton, exportCsvButton, deleteProjectButton;
+    Button addWordsButton, browseWordsButton, trainButton, importCsvButton, exportCsvButton, deleteProjectButton, notesButton;
     TextView subTitleProjectName;
 
 
@@ -32,13 +32,14 @@ public class ProjectMenuActivity extends AppCompatActivity implements DeleteDial
         super.onCreate(savedInstanceState);
 
         if(MainActivity.currentProjectName == null){
-            Toast.makeText(getApplicationContext(), "Reset Security", Toast.LENGTH_LONG).show();
             Intent intent = new Intent(getApplicationContext(), MainActivity.class);
             startActivity(intent);
             finish();
         }
 
         setContentView(R.layout.activity_project_menu);
+
+        MainActivity.resetToDefault();
 
         MainActivity.dataBase = new DataBase(ProjectMenuActivity.this,  MainActivity.currentProjectName);
         MainActivity.wordTrainList =  MainActivity.dataBase.getWords(2, null, null);
@@ -52,6 +53,9 @@ public class ProjectMenuActivity extends AppCompatActivity implements DeleteDial
         importCsvButton = (Button)findViewById(R.id.importCSVButtonMenu);
         exportCsvButton = (Button)findViewById(R.id.exportCSVButton);
         deleteProjectButton = (Button)findViewById(R.id.deleteProject);
+        deleteProjectButton = (Button)findViewById(R.id.deleteProject);
+        notesButton = (Button)findViewById(R.id.notesButton);
+
 
         deleteProjectButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -92,6 +96,14 @@ public class ProjectMenuActivity extends AppCompatActivity implements DeleteDial
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(getApplicationContext(), ExportCsvActivity.class);
+                startActivity(intent);
+            }
+        });
+
+        notesButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(getApplicationContext(), NotesActivity.class);
                 startActivity(intent);
             }
         });

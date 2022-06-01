@@ -5,6 +5,7 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 
@@ -28,6 +29,7 @@ public class DataBase extends SQLiteOpenHelper {
     public static String COLUMN_CATEGORY = "CATEGORY";
     public static String COLUMN_DATE = "DATE";
     public static String COLUMN_BOOKMARKED = "BOOKMARKED";
+    public static String NOTES_NAME = "notes_unique_id";
 
     public DataBase(@Nullable Context context, String name) {
         super(context, name, null, 1);
@@ -123,62 +125,62 @@ public class DataBase extends SQLiteOpenHelper {
         switch (mode){
             //Insert Oder
             case 1:
-                queryString = "SELECT * FROM " + DATABASE_NAME;
+                queryString = "SELECT * FROM " + DATABASE_NAME + " WHERE " + COLUMN_WORD_1 + " != " + "'"+ NOTES_NAME + "'";
                 break;
 
             //Random order, through all words
             case 2:
-                queryString = "SELECT * FROM " + DATABASE_NAME + " ORDER BY RANDOM()";
+                queryString = "SELECT * FROM " + DATABASE_NAME + " WHERE " + COLUMN_WORD_1 + " != " + "'"+ NOTES_NAME + "'" + " ORDER BY RANDOM()";
                 break;
 
             //Alphabetical order according to Language 1
             case 3:
-                queryString = "SELECT * FROM " + DATABASE_NAME + " ORDER BY " + COLUMN_WORD_1 + " COLLATE UNICODE ASC";
+                queryString = "SELECT * FROM " + DATABASE_NAME + " WHERE " + COLUMN_WORD_1 + " != " + "'"+ NOTES_NAME + "'" + " ORDER BY " + COLUMN_WORD_1 + " COLLATE UNICODE ASC";
                 break;
 
             //Reverse alphabetical order according to Language 1
             case 4:
-                queryString = "SELECT * FROM " + DATABASE_NAME + " ORDER BY " + COLUMN_WORD_1 + " COLLATE UNICODE DESC";
+                queryString = "SELECT * FROM " + DATABASE_NAME + " WHERE " + COLUMN_WORD_1 + " != " + "'"+ NOTES_NAME + "'" + " ORDER BY " + COLUMN_WORD_1 + " COLLATE UNICODE DESC";
                 break;
 
             //Alphabetical order according to Language 2
             case 5:
-                queryString = "SELECT * FROM " + DATABASE_NAME + " ORDER BY " + COLUMN_WORD_2 + " COLLATE UNICODE ASC";
+                queryString = "SELECT * FROM " + DATABASE_NAME + " WHERE " + COLUMN_WORD_1 + " != " + "'"+ NOTES_NAME + "'" + " ORDER BY " + COLUMN_WORD_2 + " COLLATE UNICODE ASC";
                 break;
 
             //Reverse alphabetical order according to Language 2
             case 6:
-                queryString = "SELECT * FROM " + DATABASE_NAME + " ORDER BY " + COLUMN_WORD_2 + " COLLATE UNICODE DESC";
+                queryString = "SELECT * FROM " + DATABASE_NAME + " WHERE " + COLUMN_WORD_1 + " != " + "'"+ NOTES_NAME + "'" + " ORDER BY " + COLUMN_WORD_2 + " COLLATE UNICODE DESC";
                 break;
 
             //Random order through all bookmarked words
             case 7:
-                queryString = "SELECT * FROM " + DATABASE_NAME + " WHERE " + COLUMN_BOOKMARKED + " = 1 ORDER BY RANDOM() LIMIT " + Integer.toString(limit);
+                queryString = "SELECT * FROM " + DATABASE_NAME + " WHERE " + COLUMN_WORD_1 + " != " + "'"+ NOTES_NAME + "'" + " AND " + COLUMN_BOOKMARKED + " = 1 ORDER BY RANDOM() LIMIT " + Integer.toString(limit);
                 break;
 
             // X Last added by Date
             case 8:
-                queryString = "SELECT * FROM " + DATABASE_NAME + " ORDER BY " + COLUMN_DATE + " DESC LIMIT " + Integer.toString(limit);
+                queryString = "SELECT * FROM " + DATABASE_NAME + " WHERE " + COLUMN_WORD_1 + " != " + "'"+ NOTES_NAME + "'" + " ORDER BY " + COLUMN_DATE + " DESC LIMIT " + Integer.toString(limit);
                 break;
 
             // Search in Language 1 and 2 for pattern (Browser mode) and in alphabetical order according to language1
             case 9:
-                queryString = "SELECT * FROM " + DATABASE_NAME + " WHERE " + COLUMN_WORD_1 + " LIKE " + "'%" + pattern + "%'" + " OR " + COLUMN_WORD_2 + " LIKE "  + "'%" + pattern + "%'" + " ORDER BY " + COLUMN_WORD_1 + " COLLATE UNICODE ASC";
+                queryString = "SELECT * FROM " + DATABASE_NAME + " WHERE " + COLUMN_WORD_1 + " != " + "'"+ NOTES_NAME + "'" + " AND ( " + COLUMN_WORD_1 + " LIKE " + "'%" + pattern + "%'" + " OR " + COLUMN_WORD_2 + " LIKE "  + "'%" + pattern + "%'" + " ) ORDER BY " + COLUMN_WORD_1 + " COLLATE UNICODE ASC";
                 break;
 
             // Search in Language 1 and 2 for pattern (Browser mode) and in alphabetical order according to language2
             case 10:
-                queryString = "SELECT * FROM " + DATABASE_NAME + " WHERE " + COLUMN_WORD_2 + " LIKE " + pattern  + " ORDER BY " + COLUMN_WORD_2 + " COLLATE UNICODE ASC";
+                queryString = "SELECT * FROM " + DATABASE_NAME + " WHERE " + COLUMN_WORD_1 + " != " + "'"+ NOTES_NAME + "'" + " AND " + COLUMN_WORD_2 + " LIKE " + pattern  + " ORDER BY " + COLUMN_WORD_2 + " COLLATE UNICODE ASC";
                 break;
 
             // Most failed
             case 11:
-                queryString = "SELECT * FROM " + DATABASE_NAME + " ORDER BY " + COLUMN_PERCENTAGE + " ASC LIMIT " + limit + " COLLATE UNICODE";
+                queryString = "SELECT * FROM " + DATABASE_NAME + " WHERE " + COLUMN_WORD_1 + " != " + "'"+ NOTES_NAME + "'" + " ORDER BY " + COLUMN_PERCENTAGE + " ASC LIMIT " + limit + " COLLATE UNICODE";
                 break;
 
             // Less encountered
             case 12:
-                queryString = "SELECT * FROM " + DATABASE_NAME + " ORDER BY " + COLUMN_COUNT + " ASC LIMIT " + limit + " COLLATE UNICODE";
+                queryString = "SELECT * FROM " + DATABASE_NAME + " WHERE " + COLUMN_WORD_1 + " != " + "'"+ NOTES_NAME + "'" + " ORDER BY " + COLUMN_COUNT + " ASC LIMIT " + limit + " COLLATE UNICODE";
                 break;
 
         }
@@ -210,5 +212,79 @@ public class DataBase extends SQLiteOpenHelper {
         db.close();
 
         return returnList;
+    }
+
+    public boolean setNotes(){
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues cv = new ContentValues();
+
+        cv.put(COLUMN_WORD_1, NOTES_NAME);
+        cv.put(COLUMN_WORD_2, "");
+        cv.put(COLUMN_COUNT, 0);
+        cv.put(COLUMN_SUCCESS, 0);
+        cv.put(COLUMN_PERCENTAGE, 0);
+        cv.put(COLUMN_CATEGORY, "");
+        cv.put(COLUMN_DATE, "");
+        cv.put(COLUMN_BOOKMARKED, false);
+
+        long insert =  db.insert(DATABASE_NAME, null, cv);
+
+        if(insert == -1 )
+            return false;
+        else{
+            return true;
+        }
+    }
+
+    public boolean updateNotes(String notes){
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues cv = new ContentValues();
+
+        cv.put(COLUMN_WORD_1, NOTES_NAME);
+        cv.put(COLUMN_WORD_2, notes);
+        cv.put(COLUMN_COUNT, 0);
+        cv.put(COLUMN_SUCCESS, 0);
+        cv.put(COLUMN_PERCENTAGE, 0);
+        cv.put(COLUMN_CATEGORY, "");
+        cv.put(COLUMN_DATE, "");
+        cv.put(COLUMN_BOOKMARKED, false);
+
+        long insert = db.update(DATABASE_NAME,cv,COLUMN_WORD_1 + " = ? " ,new String[]{"notes_unique_id"});
+
+        if(insert == -1){
+            return false;
+        }
+        else{
+            return true;
+        }
+    }
+
+    public String getNotes(){
+        String queryString = "SELECT * FROM " + DATABASE_NAME + " WHERE " + COLUMN_WORD_1 + " LIKE " + "'%" + NOTES_NAME + "%'";
+
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor cursor = db.rawQuery(queryString, null);
+
+        String Notes="";
+
+
+        if(cursor.moveToFirst()){
+            //loop through the results
+                Integer wordID = cursor.getInt(0);
+                String word1 = cursor.getString(1);
+                Notes = cursor.getString(2);
+                Integer count = cursor.getInt(3);
+                Integer success = cursor.getInt(4);
+                Float percentage = cursor.getFloat(5);
+                String category = cursor.getString(6);
+                String date = cursor.getString(7);
+                Integer bookmarked = cursor.getInt(8);
+        }
+
+
+        cursor.close();
+        db.close();
+
+        return Notes;
     }
 }

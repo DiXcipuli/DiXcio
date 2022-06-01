@@ -30,7 +30,6 @@ public class TrainActivity extends AppCompatActivity implements AdapterView.OnIt
         super.onCreate(savedInstanceState);
 
         if(MainActivity.currentProjectName == null){
-            Toast.makeText(getApplicationContext(), "Reset Security", Toast.LENGTH_LONG).show();
             Intent intent = new Intent(getApplicationContext(), MainActivity.class);
             startActivity(intent);
             finish();

@@ -34,7 +34,6 @@ public class WordDefinitionActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
 
         if(MainActivity.currentProjectName == null){
-            Toast.makeText(getApplicationContext(), "Reset Security", Toast.LENGTH_LONG).show();
             Intent intent = new Intent(getApplicationContext(), MainActivity.class);
             startActivity(intent);
             finish();
@@ -204,7 +203,7 @@ public class WordDefinitionActivity extends AppCompatActivity {
                             word2.setText("");
                             bookmarkButton.setImageResource(R.drawable.bookmark);
 
-                            if(MainActivity.wordTrainList.size() < 100){
+                            if(MainActivity.wordTrainList.size() < 10){
                                 //Refresh TrainDatabase list.
                                 //Set static MainActivity values to default.
                                 MainActivity.isCurrentCardLanguage1 = true;
